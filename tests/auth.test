@@ -1,0 +1,9 @@
+[login]
+url: /auth/login
+method: POST
+payload: {"username": "test@test.com", "password": "test1234"}
+
+[logout]
+url: /auth/logout
+method: POST
+payload:
