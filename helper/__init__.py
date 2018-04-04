@@ -6,4 +6,4 @@ Helper entry point
 
 from .config import Config
 from .app import AppConfig
-from .tests import TestsConfig
+from .tests import Tests

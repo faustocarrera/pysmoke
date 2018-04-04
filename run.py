@@ -7,6 +7,7 @@ Burn motherfucker, burn
 import os
 import click
 from helper import AppConfig
+from helper import Tests
 
 
 def get_path(filename):
@@ -22,8 +23,9 @@ def get_app_url():
 
 @click.command()
 def cli():
-    "Run your smoke tests from python"
-    app_url = get_app_url()
+    "Run your smoke tests from python" 
+    tests = Tests(get_app_url(), get_path('tests'))
+    tests.run()
 
 
 if __name__ == '__main__':

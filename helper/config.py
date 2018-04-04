@@ -13,7 +13,7 @@ class Config(object):
     config_parser = None
 
     def load(self, config_file):
-        "load config file and parse the content"
+        "Load config file and parse the content"
         self.config_parser = configparser.RawConfigParser()
         self.config_parser.read(config_file)
 
