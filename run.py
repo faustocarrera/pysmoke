@@ -6,8 +6,10 @@ Burn motherfucker, burn
 
 import os
 import click
+from helper import Config
 from helper import AppConfig
-from helper import Tests
+from helper import ApiCalls
+from pysmoke import SmokeTests
 
 
 def get_path(filename):
@@ -24,8 +26,8 @@ def get_app_url():
 @click.command()
 def cli():
     "Run your smoke tests from python" 
-    tests = Tests(get_app_url(), get_path('tests'))
-    tests.run()
+    tests = SmokeTests(get_path('tests'), ApiCalls(get_app_url()))
+    tests.run(Config())
 
 
 if __name__ == '__main__':

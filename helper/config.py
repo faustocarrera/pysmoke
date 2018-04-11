@@ -16,6 +16,7 @@ class Config(object):
         "Load config file and parse the content"
         self.config_parser = configparser.RawConfigParser()
         self.config_parser.read(config_file)
+        return self
 
     def sections(self):
         "Get the config sections"

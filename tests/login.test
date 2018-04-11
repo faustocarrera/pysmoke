@@ -1,25 +1,11 @@
-[version]
-url: /version
-method: GET
-authorization:
-payload:
-tests: {"http_status": 200 "result": true}
-
-[404]
-url: /404
-method: GET
-authorization:
-payload:
-tests: {"http_status": 404 "error": true}
-
-[login]
+[dologin]
 url: /auth/login
 method: POST
 authorization:
 payload: {"username": "test@test.com", "password": "test1234"}
 tests: {"http_status": 200 "token": true, "id": true, "id": 20}
 
-[logout]
+[dologout]
 url: /auth/logout
 method: POST
 authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zbnQuYXJnZW50aW5hLmdvYi5hciIsImF1ZCI6Imh0dHA6XC9cL3NudC5hcmdlbnRpbmEuZ29iLmFyIiwiaWF0IjoxNTIzNDU3NDI1LCJqdGkiOiI5Zjc0YTdkZWU5ZTk3NWIwNmIzNTY4YTU2NDZmZTFiNCIsInRpbWVzdGFtcCI6MTUyMzQ1NzQyNSwidWlkIjoyMCwidXNlcm5hbWUiOiJmY2FycmVyYUBoZXhhY3RhLmNvbSIsInJvbGUiOiJST0xfQURNSU4iLCJleHAiOjE1MjM0NjQ2MjV9.VAKcrt0hybe1BUR6SR5ORc5HuAKVNUUTxbCy5hDgI60
