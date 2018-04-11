@@ -4,4 +4,4 @@
 Pysmoke entry point
 """
 
-from .smoke import SmokeTests 
+from .smoke import SmokeTests

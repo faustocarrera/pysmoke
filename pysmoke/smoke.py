@@ -7,12 +7,14 @@ Pysmoke class
 from os import listdir
 from os.path import isfile
 from os.path import join
+from .pytest import Pytest
 
 
 class SmokeTests():
 
     def __init__(self, tests_src, api_calls):
         "Entry point"
+        self.pytest = Pytest()
         self.tests_src = tests_src
         self.api_calls = api_calls
         self.tests_list = self.list_tests(tests_src)
@@ -57,5 +59,6 @@ class SmokeTests():
             ## end display
             test = self.tests_to_run[key]
             response = self.api_calls.call(test)
-            print(response)
+            self.pytest.test(response, test['tests'])
+            
         
