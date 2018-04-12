@@ -7,14 +7,15 @@ Pysmoke class
 from os import listdir
 from os.path import isfile
 from os.path import join
-from .pytest import Pytest
+from pysmoke.tests import Tests
+import json
 
 
 class SmokeTests():
 
     def __init__(self, tests_src, api_calls):
         "Entry point"
-        self.pytest = Pytest()
+        self.pytest = Tests()
         self.tests_src = tests_src
         self.api_calls = api_calls
         self.tests_list = self.list_tests(tests_src)
@@ -36,7 +37,7 @@ class SmokeTests():
         "Parse config sections"
         count = 0
         for section in config.sections():
-            index = '{0}::{1}::{2}'.format(filename, count, section) 
+            index = '{0}::{1}::{2}'.format(filename, count, section)
             self.tests_to_run[index] = self.options(config, section)
             count += 1
         return None
@@ -49,16 +50,14 @@ class SmokeTests():
             options[option] = config.get(section, option)
             count += 1
         return options
-    
+
     def run_tests(self):
         "Run the tests"
         for key in sorted(self.tests_to_run.keys()):
-            ## display wich test are we running
+            # display wich test are we running
             index_parts = key.split('::')
             print('Running test {1} from {0}'.format(index_parts[0], index_parts[2]))
-            ## end display
+            # end display
             test = self.tests_to_run[key]
             response = self.api_calls.call(test)
-            self.pytest.test(response, test['tests'])
-            
-        
+            self.pytest.test(response, json.loads(test['tests']))
