@@ -4,34 +4,30 @@
 Test class
 """
 
-import sys
-
 
 class Tests(object):
 
     def __init__(self):
-        pass
+        self.test_to_run = None
 
-    def test(self, request, tests):
-        "Run tests"
-        self.tests = tests
+    def test(self, request, tests_list):
+        "Run tests_list"
+        self.test_to_run = tests_list
         # elapsed time
         'Request elapsed time {0}'.format(request['elapsed_time'])
         # display response
         print(request['response'])
         # http_status
-        print(self.http_status(request, tests))
-        # walk the tests
-        for test in tests:
-            print(self.__validate(test, tests[test], request['response']))
+        print(self.http_status(request, tests_list))
+        # walk the tests_list
+        for test in tests_list:
+            print(self.__validate(test, tests_list[test], request['response']))
         # close the tests
         print(' ')
-        # print(request)
-        # print(tests)
 
     def http_status(self, request, tests):
         "Check http status"
-        if 'http_status' in self.tests.keys():
+        if 'http_status' in self.test_to_run.keys():
             if request['http_status'] == tests['http_status']:
                 test_result = 'ok'
             else:
@@ -39,7 +35,7 @@ class Tests(object):
                     tests['http_status'],
                     request['http_status']
                 )
-            self.tests.pop('http_status', 0)
+            self.test_to_run.pop('http_status', 0)
             return 'HTTP status test {0}'.format(test_result)
         return None
 
@@ -47,11 +43,14 @@ class Tests(object):
         "Validate the request with the tests"
         req_value = self.__get_value(index, request)
         if type(value) == type(True) and value is not None:
-            test_result = 'ok expected value {0} returned value {1}'.format(value, req_value)
+            test_result = 'ok expected value {0} returned value {1}'.format(
+                value, req_value)
         elif req_value == value:
-            test_result = 'ok expected value {0} returned value {1}'.format(value, req_value)
+            test_result = 'ok expected value {0} returned value {1}'.format(
+                value, req_value)
         else:
-            test_result = 'error expected value {0} returned value {1}'.format(value, req_value)
+            test_result = 'error expected value {0} returned value {1}'.format(
+                value, req_value)
         return '{0} test {1}'.format(index, test_result)
 
     @staticmethod

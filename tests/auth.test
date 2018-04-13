@@ -3,25 +3,40 @@ url: /version
 method: GET
 authorization:
 payload:
-tests: {"http_status": 200, "result": true, "result.version": true}
+tests: 
+	http_status: 200
+	result: true
+	result.version: true
 
 [404]
 url: /404
 method: GET
 authorization:
 payload:
-tests: {"http_status": 404, "error": true, "error.code": true}
+tests:
+	http_status: 404
+	error: true
+	error.code: true
 
 [login]
 url: /auth/login
 method: POST
 authorization:
 payload: {"username": "test@test.com", "password": "test1234"}
-tests: {"http_status": 200, "token": true, "id": true, "id": 20}
+tests: 
+	http_status: 200
+	token: true
+	id: true
+	id: 20
 
 [logout]
 url: /auth/logout
 method: POST
 authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9zbnQuYXJnZW50aW5hLmdvYi5hciIsImF1ZCI6Imh0dHA6XC9cL3NudC5hcmdlbnRpbmEuZ29iLmFyIiwiaWF0IjoxNTIzNDU3NDI1LCJqdGkiOiI5Zjc0YTdkZWU5ZTk3NWIwNmIzNTY4YTU2NDZmZTFiNCIsInRpbWVzdGFtcCI6MTUyMzQ1NzQyNSwidWlkIjoyMCwidXNlcm5hbWUiOiJmY2FycmVyYUBoZXhhY3RhLmNvbSIsInJvbGUiOiJST0xfQURNSU4iLCJleHAiOjE1MjM0NjQ2MjV9.VAKcrt0hybe1BUR6SR5ORc5HuAKVNUUTxbCy5hDgI60
 payload:
-tests: {"http_status": 200, "status": true, "status": "SUCCESS", "code": true, "code": 200}
+tests: 
+	http_status: 200
+	status: true
+	status: SUCCESS
+	code: true
+	code: 200

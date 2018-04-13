@@ -59,5 +59,28 @@ class SmokeTests():
             print('Running test {1} from {0}'.format(index_parts[0], index_parts[2]))
             # end display
             test = self.tests_to_run[key]
-            response = self.api_calls.call(test)
-            self.pytest.test(response, json.loads(test['tests']))
+            print(self.parse_tests_string(test['tests']))
+            # response = self.api_calls.call(test)
+            # self.pytest.test(response, json.loads(test['tests']))
+            
+    @staticmethod
+    def parse_tests_string(tests_string):
+        "Parse tests string to convert it to object"
+        valid_tests = []
+        tests_list = tests_string.split("\n")
+        for entry in tests_list:
+            if entry:
+                test = entry.split(':')
+                key = test[0].strip()
+                value = self.__guess_value(test[1].strip())
+                # check if true or false
+                if value == 'true':
+                    value = True
+                if value == 'false':
+                    value = False
+                valid_tests.append((key, value))
+        return valid_tests
+
+    @staticmethod
+    def __guess_value(value):
+        "Guess value"
