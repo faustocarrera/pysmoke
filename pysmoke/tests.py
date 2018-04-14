@@ -17,41 +17,34 @@ class Tests(object):
         'Request elapsed time {0}'.format(request['elapsed_time'])
         # display response
         print(request['response'])
-        # http_status
-        print(self.http_status(request, tests_list))
         # walk the tests_list
         for test in tests_list:
-            print(self.__validate(test, tests_list[test], request['response']))
+            if test[0] == 'http_status':
+                print(self.http_status(test[1], request))
+            else:
+                print(self.__validate(test[0], test[1], request['response']))
         # close the tests
         print(' ')
 
-    def http_status(self, request, tests):
+    def http_status(self, expected, request):
         "Check http status"
-        if 'http_status' in self.test_to_run.keys():
-            if request['http_status'] == tests['http_status']:
-                test_result = 'ok'
-            else:
-                test_result = 'error expected value {0} returned value {1}'.format(
-                    tests['http_status'],
-                    request['http_status']
-                )
-            self.test_to_run.pop('http_status', 0)
-            return 'HTTP status test {0}'.format(test_result)
-        return None
+        if request['http_status'] == expected:
+            test_result = 'ok'
+        else:
+            test_result = 'error expected value {0} returned value {1}'.format(
+                expected,
+                request['http_status']
+            )
+        return 'HTTP status test {0}'.format(test_result)
 
     def __validate(self, index, value, request):
         "Validate the request with the tests"
         req_value = self.__get_value(index, request)
-        if type(value) == type(True) and value is not None:
-            test_result = 'ok expected value {0} returned value {1}'.format(
-                value, req_value)
-        elif req_value == value:
-            test_result = 'ok expected value {0} returned value {1}'.format(
-                value, req_value)
+        # check for booleans
+        if type(value) == type(True):
+            return self.__test_boolean(index, value, req_value)
         else:
-            test_result = 'error expected value {0} returned value {1}'.format(
-                value, req_value)
-        return '{0} test {1}'.format(index, test_result)
+            return self.__test_equal(index, value, req_value)
 
     @staticmethod
     def __get_value(index, request):
@@ -63,3 +56,36 @@ class Tests(object):
                 value = request[ind]
                 request = request[ind]
         return value
+
+    @staticmethod
+    def __test_boolean(index, expected, returned):
+        "Test true or false"
+        if expected is True:
+            if returned:
+                test_result = 'ok'.format(expected, returned)
+            else:
+                test_result = 'error expected value {0} returned value {1}'.format(
+                    expected,
+                    returned
+                )
+        else:
+            if returned:
+                test_result = 'error expected value {0} returned value {1}'.format(
+                    expected,
+                    returned
+                )
+            else:
+                test_result = 'ok'.format(expected, returned)
+        return '{0} test {1}'.format(index, test_result)
+
+    @staticmethod
+    def __test_equal(index, expected, returned):
+        "Test if two values are equal"
+        if returned == expected:
+            test_result = 'ok'.format(expected, returned)
+        else:
+            test_result = 'error expected value {0} returned value {1}'.format(
+                expected,
+                returned
+            )
+        return '{0} test {1}'.format(index, test_result)
