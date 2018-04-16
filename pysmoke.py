@@ -9,7 +9,7 @@ import click
 from helper import Config
 from helper import AppConfig
 from helper import ApiCalls
-from pysmoke import SmokeTests
+from smoke import SmokeTests
 
 
 def get_path(filename):

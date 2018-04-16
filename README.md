@@ -46,5 +46,5 @@ Modify or create test inside the tests folder, all the tests must have the .test
 Run the app.
 
 ```
-$ env/bin/python run.py
+$ env/bin/python pysmoke.py
 ```

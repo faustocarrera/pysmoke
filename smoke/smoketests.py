@@ -7,8 +7,7 @@ Pysmoke class
 from os import listdir
 from os.path import isfile
 from os.path import join
-from pysmoke.tests import Tests
-import json
+from smoke.tests import Tests
 
 
 class SmokeTests():
@@ -26,11 +25,11 @@ class SmokeTests():
         return [f for f in listdir(path) if isfile(join(path, f))]
 
     def run(self, config):
-        "Load and run the tests"
+        "Load and pysmoke the tests"
         for test_file in self.tests_list:
             config.load(join(self.tests_src, test_file))
             self.compose(config, test_file)
-        # run the tests
+        # pysmoke the tests
         self.run_tests()
 
     def compose(self, config, filename):
