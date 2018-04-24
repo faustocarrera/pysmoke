@@ -5,3 +5,4 @@ Pysmoke entry point
 """
 
 from .smoketests import SmokeTests
+from .utils import Utils

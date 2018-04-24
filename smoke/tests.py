@@ -62,7 +62,7 @@ class Tests(object):
         "Test true or false"
         if expected is True:
             if returned:
-                test_result = 'ok'.format(expected, returned)
+                test_result = 'ok'
             else:
                 test_result = 'error expected value {0} returned value {1}'.format(
                     expected,
@@ -75,14 +75,14 @@ class Tests(object):
                     returned
                 )
             else:
-                test_result = 'ok'.format(expected, returned)
+                test_result = 'ok'
         return '{0} test {1}'.format(index, test_result)
 
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
         if returned == expected:
-            test_result = 'ok'.format(expected, returned)
+            test_result = 'ok'
         else:
             test_result = 'error expected value {0} returned value {1}'.format(
                 expected,
