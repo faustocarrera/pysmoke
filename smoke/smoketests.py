@@ -32,7 +32,8 @@ class SmokeTests(object):
             config.load(join(self.tests_src, test_file))
             self.compose(config, test_file)
         # pysmoke the tests
-        self.run_tests()
+        errors = self.run_tests()
+        self.show_errors(errors)
 
     def compose(self, config, filename):
         "Parse config sections"
@@ -57,10 +58,20 @@ class SmokeTests(object):
         for key in sorted(self.tests_to_run.keys()):
             # display wich test are we running
             index_parts = key.split('::')
-            print('Running test {1} from {0}'.format(index_parts[0], index_parts[2]))
+            error_index = '{0} {1}'.format(index_parts[0], index_parts[2])
             # end display
             test = self.tests_to_run[key]
             tests = self.utils.parse_tests_string(test['tests'])
             response = self.api_calls.call(test)
-            # response = self.__get_dummy_response()
-            self.pytest.test(response, tests)
+            # response = self.utils.get_dummy_response()
+            self.pytest.test(response, tests, error_index)
+        # the errors
+        return self.pytest.get_errors()
+
+    def show_errors(self, errors):
+        "Show error in the console"
+        print(errors)
+        for error in errors:
+            if len(errors[error]):
+                for entry in errors[error]:
+                    print('{0} {1}'.format(error, entry))

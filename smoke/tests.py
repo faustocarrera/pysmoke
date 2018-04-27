@@ -9,33 +9,33 @@ class Tests(object):
 
     def __init__(self):
         self.test_to_run = None
+        self.errors = {}
 
-    def test(self, request, tests_list):
+    def test(self, request, tests_list, error_index):
         "Run tests_list"
         self.test_to_run = tests_list
-        # elapsed time
-        'Request elapsed time {0}'.format(request['elapsed_time'])
-        # display response
-        print(request['response'])
         # walk the tests_list
         for test in tests_list:
+            self.errors[error_index] = []
             if test[0] == 'http_status':
-                print(self.http_status(test[1], request))
+                self.__add_error(error_index, self.http_status(test[1], request))
             else:
-                print(self.__validate(test[0], test[1], request['response']))
-        # close the tests
-        print(' ')
+                self.__add_error(error_index, self.__validate(test[0], test[1], request['response']))
+        print(self.errors)
+        
+    def get_errors(self):
+        "Return errors list"
+        return self.errors
 
     def http_status(self, expected, request):
         "Check http status"
         if request['http_status'] == expected:
-            test_result = 'ok'
+            return None
         else:
-            test_result = 'error expected value {0} returned value {1}'.format(
+            return 'HTTP status error expected value {0} returned value {1}'.format(
                 expected,
                 request['http_status']
             )
-        return 'HTTP status test {0}'.format(test_result)
 
     def __validate(self, index, value, request):
         "Validate the request with the tests"
@@ -45,6 +45,11 @@ class Tests(object):
             return self.__test_boolean(index, value, req_value)
         else:
             return self.__test_equal(index, value, req_value)
+
+    def __add_error(self, index, error):
+        "Add error to list"
+        if error:
+            self.errors[index].append(error)
 
     @staticmethod
     def __get_value(index, request):
@@ -62,30 +67,31 @@ class Tests(object):
         "Test true or false"
         if expected is True:
             if returned:
-                test_result = 'ok'
+                return None
             else:
-                test_result = 'error expected value {0} returned value {1}'.format(
+                return '{0} error expected value {1} returned value {2}'.format(
+                    index,
                     expected,
                     returned
                 )
         else:
             if returned:
-                test_result = 'error expected value {0} returned value {1}'.format(
+                return '{0} error expected value {1} returned value {2}'.format(
+                    index,
                     expected,
                     returned
                 )
             else:
-                test_result = 'ok'
-        return '{0} test {1}'.format(index, test_result)
+                return None
 
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
         if returned == expected:
-            test_result = 'ok'
+            return None
         else:
-            test_result = 'error expected value {0} returned value {1}'.format(
+            return '{0} error expected value {1} returned value {2}'.format(
+                index,
                 expected,
                 returned
             )
-        return '{0} test {1}'.format(index, test_result)

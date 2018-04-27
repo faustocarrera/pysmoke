@@ -40,7 +40,7 @@ class Utils(object):
         return value
 
     @staticmethod
-    def __get_dummy_response():
+    def get_dummy_response():
         return {
             'elapsed_time': 0.10376,
             'http_status': 200,
