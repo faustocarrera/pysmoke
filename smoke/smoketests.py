@@ -58,7 +58,7 @@ class SmokeTests(object):
         for key in sorted(self.tests_to_run.keys()):
             # display wich test are we running
             index_parts = key.split('::')
-            error_index = '{0} {1}'.format(index_parts[0], index_parts[2])
+            error_index = '{0} :: {1}'.format(index_parts[0], index_parts[2])
             # end display
             test = self.tests_to_run[key]
             tests = self.utils.parse_tests_string(test['tests'])
@@ -70,8 +70,5 @@ class SmokeTests(object):
 
     def show_errors(self, errors):
         "Show error in the console"
-        print(errors)
         for error in errors:
-            if len(errors[error]):
-                for entry in errors[error]:
-                    print('{0} {1}'.format(error, entry))
+            print(error)

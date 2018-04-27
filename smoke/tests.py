@@ -9,19 +9,17 @@ class Tests(object):
 
     def __init__(self):
         self.test_to_run = None
-        self.errors = {}
+        self.errors = []
 
     def test(self, request, tests_list, error_index):
         "Run tests_list"
-        self.test_to_run = tests_list
         # walk the tests_list
         for test in tests_list:
-            self.errors[error_index] = []
             if test[0] == 'http_status':
                 self.__add_error(error_index, self.http_status(test[1], request))
             else:
                 self.__add_error(error_index, self.__validate(test[0], test[1], request['response']))
-        print(self.errors)
+        return self.errors
         
     def get_errors(self):
         "Return errors list"
@@ -49,7 +47,7 @@ class Tests(object):
     def __add_error(self, index, error):
         "Add error to list"
         if error:
-            self.errors[index].append(error)
+            self.errors.append('{0} :: {1}'.format(index, error))
 
     @staticmethod
     def __get_value(index, request):
