@@ -9,6 +9,7 @@ from os.path import isfile
 from os.path import join
 from smoke.tests import Tests
 from smoke.utils import Utils
+import sys
 
 
 class SmokeTests(object):
@@ -71,4 +72,8 @@ class SmokeTests(object):
     def show_errors(self, errors):
         "Show error in the console"
         for error in errors:
-            print(error)
+            print(error, file=sys.stderr)
+        # exit program
+        if len(errors):
+            sys.exit(1)
+        sys.exit(0)
