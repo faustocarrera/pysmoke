@@ -35,9 +35,9 @@ class Tests(object):
                 request['http_status']
             )
 
-    def __validate(self, index, value, request):
-        "Validate the request with the tests"
-        req_value = self.__get_value(index, request)
+    def __validate(self, index, value, response):
+        "Validate the response with the tests"
+        req_value = self.__get_value(index, response)
         # check for booleans
         if type(value) == type(True):
             return self.__test_boolean(index, value, req_value)
@@ -49,16 +49,33 @@ class Tests(object):
         if error:
             self.errors.append('{0} :: {1}'.format(index, error))
 
-    @staticmethod
-    def __get_value(index, request):
-        "Get the request value"
+    def __get_value(self, index, response):
+        "Get the response value"
         index_parts = index.split('.')
         value = None
         for ind in index_parts:
-            if ind in request.keys():
-                value = request[ind]
-                request = request[ind]
+            if isinstance(response, list):
+                value = self.__get_list_value(ind, response)
+                response = value
+            elif isinstance(response, dict):
+                value = self.__get_dict_value(ind, response)
+                response = value
         return value
+    
+    @staticmethod
+    def __get_list_value(index, items):
+        "Get the item from a list of items"
+        try:
+            return items[int(index)]
+        except IndexError:
+            return None
+        
+    @staticmethod
+    def __get_dict_value(index, items):
+        "Get the item from a dictionary with items"
+        if index in items.keys():
+            return items[index]
+        return None
 
     @staticmethod
     def __test_boolean(index, expected, returned):

@@ -1,0 +1,23 @@
+[list]
+url: /posts
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 200
+	0: true
+	0.id: true
+	0.id: 1
+	
+[post]
+url: /posts/1
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 200
+	userId: true
+	id: true
+	id: 1
+	title: true
+	body: true
