@@ -60,3 +60,23 @@ tests:
 	body: true
 	id: true
 	id: 101
+
+[updatepost]
+url: /posts/1
+method: PUT
+authorization:
+payload: {"title": "This is a test title", "body": "This is a test body"}
+tests:
+	http_status: 200
+	title: true
+	body: true
+	id: true
+	id: 1
+
+[deletepost]
+url: /posts/1
+method: DELETE
+authorization:
+payload:
+tests:
+	http_status: 200
