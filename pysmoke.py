@@ -24,9 +24,10 @@ def get_app_url():
 
 
 @click.command()
-def cli():
-    "Run your smoke tests from python" 
-    tests = SmokeTests(get_path('tests'), ApiCalls(get_app_url()))
+@click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
+def cli(verbose):
+    "Run your smoke tests from python"
+    tests = SmokeTests(get_path('tests'), ApiCalls(get_app_url()), verbose)
     tests.run(Config())
 
 

@@ -21,3 +21,42 @@ tests:
 	id: 1
 	title: true
 	body: true
+
+[comments]
+url: /posts/1/comments
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 200
+	0: true
+	0.postId: true
+	0.id: true
+	0.name: true
+	0.email: true
+	0.body: true
+	
+[userposts]
+url: /posts?userId=1
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 200
+	0: true
+	0.userId: true
+	0.id: true
+	0.title: true
+	0.body: true
+
+[createpost]
+url: /posts
+method: POST
+authorization:
+payload: {"title": "This is a test title", "body": "This is a test body"}
+tests:
+	http_status: 201
+	title: true
+	body: true
+	id: true
+	id: 101

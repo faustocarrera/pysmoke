@@ -14,7 +14,7 @@ import sys
 
 class SmokeTests(object):
 
-    def __init__(self, tests_src, api_calls):
+    def __init__(self, tests_src, api_calls, verbose):
         "Entry point"
         self.pytest = Tests()
         self.utils = Utils()
@@ -22,6 +22,7 @@ class SmokeTests(object):
         self.api_calls = api_calls
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
+        self.verbose = verbose
 
     def list_tests(self, path):
         "Return a list of test on the folder"
@@ -64,6 +65,16 @@ class SmokeTests(object):
             test = self.tests_to_run[key]
             tests = self.utils.parse_tests_string(test['tests'])
             response = self.api_calls.call(test)
+            # verbose mode
+            self.__verbose(
+                self.verbose,
+                index_parts[0],
+                index_parts[2],
+                self.api_calls.get_api_url(),
+                test['url'],
+                test['payload'],
+                response
+            )
             # response = self.utils.get_dummy_response()
             self.pytest.test(response, tests, error_index)
         # the errors
@@ -77,3 +88,18 @@ class SmokeTests(object):
         if len(errors):
             sys.exit(1)
         sys.exit(0)
+
+    @staticmethod
+    def __verbose(verbose, filename, testname, apiurl, testurl, payload, response):
+        "Print request and response data"
+        if verbose:
+            print('File: {0}'.format(filename))
+            print('Test: {0}'.format(testname))
+            print('API: {0}'.format(apiurl))
+            print('Resource: {0}'.format(testurl))
+            print('Payload')
+            print(payload)
+            print('Response')
+            for item in response:
+                print('{0}: {1}'.format(item, response[item]))
+            print('')
