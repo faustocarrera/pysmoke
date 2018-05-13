@@ -49,10 +49,8 @@ Run the app.
 $ env/bin/python pysmoke.py
 ```
 
-## Tests
+Run it on verbose mode.  
 
 ```
-curl -x GET https://jsonplaceholder.typicode.com/posts
-curl -x GET https://jsonplaceholder.typicode.com/posts/1
-curl -X GET https://jsonplaceholder.typicode.com/posts/1?userId=1
+$ env/bin/python pysmoke.py -v
 ```
