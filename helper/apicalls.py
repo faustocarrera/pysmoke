@@ -6,18 +6,20 @@ Make API calls
 
 import requests
 import json
+import re
 
 
 class ApiCalls():
 
-    def __init__(self, app_url):
+    def __init__(self, app_url, app_vars):
         self.app_url = app_url
+        self.app_vars = app_vars
 
     def call(self, test):
-        url = self.app_url + test['url']
+        url = self.app_url + self.__vars_replace(test['url'])
         method = test['method']
-        headers = {'authorization': test['authorization']}
-        payload = self.convert_payload(test['payload'])
+        headers = {'authorization': self.__vars_replace(test['authorization'])}
+        payload = self.convert_payload(self.__vars_replace(test['payload']))
         if method == 'GET':
             return self.get(url, headers, payload)
         if method == 'POST':
@@ -51,6 +53,14 @@ class ApiCalls():
     def get_api_url(self):
         "Get the API url"
         return self.app_url
+
+    def __vars_replace(self, string):
+        "Find and replace config vars from strings"
+        match = re.findall('{([a-zA-Z0-9_]+)}', string)
+        for m in match:
+            find = '{%s}' % m
+            string = string.replace(find, self.app_vars[m])
+        return string
 
     @staticmethod
     def convert_payload(payload):

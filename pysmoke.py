@@ -17,17 +17,16 @@ def get_path(filename):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), filename)
 
 
-def get_app_url():
-    "Get the app url"
-    app_config = AppConfig(get_path('config/app.conf'))
-    return app_config.appurl()
-
-
 @click.command()
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
 def cli(verbose):
     "Run your smoke tests from python"
-    tests = SmokeTests(get_path('tests'), ApiCalls(get_app_url()), verbose)
+    config = AppConfig(get_path('config/app.conf'))
+    tests = SmokeTests(
+        get_path('tests'),
+        ApiCalls(config.appurl(), config.vars()),
+        verbose
+    )
     tests.run(Config())
 
 
