@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Make API calls
+Module that make the API calls
 """
 
-import requests
 import json
 import re
+import requests
 
 
-class ApiCalls():
+class ApiCalls(object):
+    "Class to make the request to the API"
 
     def __init__(self, app_url, app_vars):
         self.app_url = app_url
         self.app_vars = app_vars
 
     def call(self, test):
+        "Call entry point"
         url = self.app_url + self.__vars_replace(test['url'])
         method = test['method']
         headers = {'authorization': self.__vars_replace(test['authorization'])}
@@ -56,10 +58,10 @@ class ApiCalls():
 
     def __vars_replace(self, string):
         "Find and replace config vars from strings"
-        match = re.findall('{([a-zA-Z0-9_]+)}', string)
-        for m in match:
-            find = '{%s}' % m
-            string = string.replace(find, self.app_vars[m])
+        finder = re.findall('{([a-zA-Z0-9_]+)}', string)
+        for match in finder:
+            find = '{%s}' % match
+            string = string.replace(find, self.app_vars[match])
         return string
 
     @staticmethod
@@ -72,6 +74,7 @@ class ApiCalls():
 
     @staticmethod
     def prepare(request):
+        "Object with the request result"
         return {
             'http_status': request.status_code,
             'headers': request.headers,

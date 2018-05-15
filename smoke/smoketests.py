@@ -4,15 +4,17 @@
 Pysmoke class
 """
 
+from __future__ import print_function
+import sys
 from os import listdir
 from os.path import isfile
 from os.path import join
 from smoke.tests import Tests
 from smoke.utils import Utils
-import sys
 
 
 class SmokeTests(object):
+    "Class to run the tests"
 
     def __init__(self, tests_src, api_calls, verbose):
         "Entry point"
@@ -24,7 +26,8 @@ class SmokeTests(object):
         self.tests_to_run = {}
         self.verbose = verbose
 
-    def list_tests(self, path):
+    @staticmethod
+    def list_tests(path):
         "Return a list of test on the folder"
         return [f for f in listdir(path) if isfile(join(path, f))]
 
@@ -46,7 +49,8 @@ class SmokeTests(object):
             count += 1
         return None
 
-    def options(self, config, section):
+    @staticmethod
+    def options(config, section):
         "Get options"
         options = {}
         count = 0
@@ -68,8 +72,7 @@ class SmokeTests(object):
             # verbose mode
             self.__verbose(
                 self.verbose,
-                index_parts[0],
-                index_parts[2],
+                index_parts,
                 self.api_calls.get_api_url(),
                 test,
                 response
@@ -79,21 +82,23 @@ class SmokeTests(object):
         # the errors
         return self.pytest.get_errors()
 
-    def show_errors(self, errors):
+    @staticmethod
+    def show_errors(errors):
         "Show error in the console"
         for error in errors:
-            print(error, file=sys.stderr)
+            print(error)
         # exit program
-        if len(errors):
+        total_errors = len(errors)
+        if total_errors > 0:
             sys.exit(1)
         sys.exit(0)
 
     @staticmethod
-    def __verbose(verbose, filename, testname, apiurl, test, response):
+    def __verbose(verbose, key, apiurl, test, response):
         "Print request and response data"
         if verbose:
-            print('Test group: {0}'.format(filename))
-            print('Test name: {0}'.format(testname))
+            print('Test group: {0}'.format(key[0]))
+            print('Test name: {0}'.format(key[2]))
             print('API url: {0}'.format(apiurl))
             print('Endpoint: {0}'.format(test['url']))
             print('Authorization: {0}'.format(test['authorization']))

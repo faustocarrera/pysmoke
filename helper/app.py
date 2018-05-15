@@ -8,6 +8,7 @@ from .config import Config
 
 
 class AppConfig(Config):
+    "Application configuration"
 
     def __init__(self, config_file):
         "Load app config"
@@ -20,7 +21,7 @@ class AppConfig(Config):
     def vars(self):
         "Get the config variables"
         app_variables = {}
-        vars = self.options('vars')
-        for var in vars:
+        variables = self.options('vars')
+        for var in variables:
             app_variables[var] = self.get('vars', var)
         return app_variables

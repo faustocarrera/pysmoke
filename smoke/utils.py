@@ -5,7 +5,8 @@ Utils class
 """
 
 class Utils(object):
-    
+    "Utils class"
+
     def parse_tests_string(self, tests_string):
         "Parse tests string to convert it to object"
         valid_tests = []
@@ -41,11 +42,12 @@ class Utils(object):
 
     @staticmethod
     def get_dummy_response():
+        "Dummy server response"
         return {
             'elapsed_time': 0.10376,
             'http_status': 200,
             'headers': {
-                'Access-Control-Allow-Headers': 'ORIGIN, X-REQUESTED-WITH, CONTENT-TYPE, AUTHORIZATION',
+                'Access-Control-Allow-Headers': 'ORIGIN, X-REQUESTED-WITH, AUTHORIZATION',
                 'Keep-Alive': 'timeout=5, max=100',
                 'Access-Control-Max-Age': '60000',
                 'Content-Type': 'application/json',
