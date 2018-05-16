@@ -9,6 +9,14 @@ tests:
 	0.id: true
 	0.id: 1
 	
+[error404]
+url: /posts
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 404
+	
 [post]
 url: /posts/{post_id}
 method: GET

@@ -22,6 +22,7 @@ class SmokeTests(object):
         self.utils = Utils()
         self.tests_src = tests_src
         self.api_calls = api_calls
+        self.total_tests = 0
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
         self.verbose = verbose
@@ -38,7 +39,7 @@ class SmokeTests(object):
             self.compose(config, test_file)
         # pysmoke the tests
         errors = self.run_tests()
-        self.show_errors(errors)
+        self.show_errors(self.total_tests, errors)
 
     def compose(self, config, filename):
         "Parse config sections"
@@ -68,43 +69,48 @@ class SmokeTests(object):
             # end display
             test = self.tests_to_run[key]
             tests = self.utils.parse_tests_string(test['tests'])
+            # total tests to run
+            self.total_tests += len(tests)
+            # response = self.utils.get_dummy_response()
             response = self.api_calls.call(test)
             # verbose mode
-            self.__verbose(
-                self.verbose,
-                index_parts,
-                self.api_calls.get_api_url(),
-                test,
-                response
-            )
-            # response = self.utils.get_dummy_response()
-            self.pytest.test(response, tests, error_index)
+            if self.verbose:
+                self.__verbose(
+                    index_parts[0],
+                    index_parts[2],
+                    self.api_calls.get_api_url(),
+                    test,
+                    response
+                )
+            # run tests  on the response
+            self.pytest.test(self.verbose, response, tests, error_index)
         # the errors
         return self.pytest.get_errors()
 
     @staticmethod
-    def show_errors(errors):
+    def show_errors(total_tests, errors):
         "Show error in the console"
-        for error in errors:
-            print(error)
-        # exit program
         total_errors = len(errors)
+        # display errors
+        if total_errors > 0:
+            print('Errors!')
+            print('Tests: {0} | Errors: {1}'.format(total_tests, total_errors))
+            for error in errors:
+                print(error)
+        # exit program
         if total_errors > 0:
             sys.exit(1)
         sys.exit(0)
 
     @staticmethod
-    def __verbose(verbose, key, apiurl, test, response):
+    def __verbose(filename, testname, apiurl, test, response):
         "Print request and response data"
-        if verbose:
-            print('Test group: {0}'.format(key[0]))
-            print('Test name: {0}'.format(key[2]))
-            print('API url: {0}'.format(apiurl))
-            print('Endpoint: {0}'.format(test['url']))
-            print('Authorization: {0}'.format(test['authorization']))
-            print('Payload')
-            print(test['payload'])
-            print('Response')
-            for item in response:
-                print('{0}: {1}'.format(item, response[item]))
-            print('')
+        print('Test: {0} :: {1}'.format(filename, testname))
+        print('Endpoint: {0}{1}'.format(apiurl, test['url']))
+        print('Authorization: {0}'.format(test['authorization']))
+        print('Payload')
+        print(test['payload'])
+        print('Response')
+        for item in response:
+            print('{0}: {1}'.format(item, response[item]))
+        print('')

@@ -12,10 +12,15 @@ class Tests(object):
         self.test_to_run = None
         self.errors = []
 
-    def test(self, request, tests_list, error_index):
+    def test(self, verbose, request, tests_list, error_index):
         "Run tests_list"
+        if verbose:
+            print('Tests running')
         # walk the tests_list
         for test in tests_list:
+            if verbose:
+                print('checkig if {0} is {1}'.format(test[0], test[1]))
+            # run tests
             if test[0] == 'http_status':
                 self.__add_error(
                     error_index,
@@ -26,6 +31,8 @@ class Tests(object):
                     error_index,
                     self.__validate(test[0], test[1], request['response'])
                 )
+        if verbose:
+            print('')
         return self.errors
 
     def get_errors(self):
