@@ -5,17 +5,20 @@ authorization: Bearer {token}
 payload:
 tests: 
 	http_status: 200
-	0: true
-	0.id: true
+	headers.Content-Type: True
+	0: True
+	0.id: True
 	0.id: 1
 	
-[error404]
+[error-404]
 url: /posts
 method: GET
 authorization:
 payload:
 tests: 
 	http_status: 404
+	headers.Content-Type: True
+	headers.Location: False
 	
 [post]
 url: /posts/{post_id}
@@ -24,11 +27,12 @@ authorization:
 payload:
 tests: 
 	http_status: 200
-	userId: true
-	id: true
+	headers.Content-Type: True
+	userId: True
+	id: True
 	id: 1
-	title: true
-	body: true
+	title: True
+	body: True
 
 [comments]
 url: /posts/{post_id}/comments
@@ -37,12 +41,13 @@ authorization:
 payload:
 tests: 
 	http_status: 200
-	0: true
-	0.postId: true
-	0.id: true
-	0.name: true
-	0.email: true
-	0.body: true
+	headers.Content-Type: True
+	0: True
+	0.postId: True
+	0.id: True
+	0.name: True
+	0.email: True
+	0.body: True
 	
 [userposts]
 url: /posts?userId={user_id}
@@ -51,11 +56,12 @@ authorization:
 payload:
 tests: 
 	http_status: 200
-	0: true
-	0.userId: true
-	0.id: true
-	0.title: true
-	0.body: true
+	headers.Content-Type: True
+	0: True
+	0.userId: True
+	0.id: True
+	0.title: True
+	0.body: True
 
 [createpost]
 url: /posts
@@ -64,9 +70,11 @@ authorization:
 payload: {"title": "This is a test title", "body": "This is a test body", "userId": "{user_id}"}
 tests:
 	http_status: 201
-	title: true
-	body: true
-	id: true
+	headers.Content-Type: True
+	headers.Location: True
+	title: True
+	body: True
+	id: True
 	id: 101
 
 [updatepost]
@@ -76,9 +84,10 @@ authorization:
 payload: {"title": "This is a test title", "body": "This is a test body"}
 tests:
 	http_status: 200
-	title: true
-	body: true
-	id: true
+	headers.Content-Type: True
+	title: True
+	body: True
+	id: True
 	id: 1
 
 [deletepost]
@@ -88,3 +97,4 @@ authorization:
 payload:
 tests:
 	http_status: 200
+	headers.Content-Type: True

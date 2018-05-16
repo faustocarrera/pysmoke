@@ -4,6 +4,7 @@
 Test class
 """
 
+import sys
 
 class Tests(object):
     "Class to validate the tests"
@@ -12,7 +13,7 @@ class Tests(object):
         self.test_to_run = None
         self.errors = []
 
-    def test(self, verbose, request, tests_list, error_index):
+    def test(self, verbose, response, tests_list, error_index):
         "Run tests_list"
         if verbose:
             print('Tests running')
@@ -24,12 +25,12 @@ class Tests(object):
             if test[0] == 'http_status':
                 self.__add_error(
                     error_index,
-                    self.http_status(test[1], request)
+                    self.http_status(test[1], response['http_status'])
                 )
             else:
                 self.__add_error(
                     error_index,
-                    self.__validate(test[0], test[1], request['response'])
+                    self.__validate(test[0], test[1], response)
                 )
         if verbose:
             print('')
@@ -40,14 +41,14 @@ class Tests(object):
         return self.errors
 
     @staticmethod
-    def http_status(expected, request):
+    def http_status(expected, http_status):
         "Check http status"
-        if request['http_status'] == expected:
+        if http_status == expected:
             return None
 
         return 'HTTP status error expected value {0} returned value {1}'.format(
             expected,
-            request['http_status']
+            http_status
         )
 
     def __validate(self, index, value, response):
@@ -67,6 +68,14 @@ class Tests(object):
     def __get_value(self, index, response):
         "Get the response value"
         index_parts = index.split('.')
+        # response type
+        if index_parts[0] == 'headers':
+            return self.__get_dict_value(index_parts[1], response['headers'])
+        else:
+            return self.__get_response_value(index_parts, response['response'])
+
+    def __get_response_value(self, index_parts, response):
+        "Obtain an item from the response"
         value = None
         for ind in index_parts:
             if isinstance(response, list):

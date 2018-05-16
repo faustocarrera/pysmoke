@@ -23,9 +23,9 @@ class Utils(object):
     def __guess_value(value):
         "Guess value"
         # check if true or false
-        if value == 'true':
+        if value == 'True':
             return True
-        if value == 'false':
+        if value == 'False':
             return False
         # check if number
         try:
