@@ -76,6 +76,7 @@ class SmokeTests(object):
             # verbose mode
             if self.verbose:
                 self.__verbose(
+                    test['method'],
                     index_parts[0],
                     index_parts[2],
                     self.api_calls.get_api_url(),
@@ -103,14 +104,15 @@ class SmokeTests(object):
         sys.exit(0)
 
     @staticmethod
-    def __verbose(filename, testname, apiurl, test, response):
+    def __verbose(method, filename, testname, apiurl, test, response):
         "Print request and response data"
         print('Test: {0} :: {1}'.format(filename, testname))
         print('Endpoint: {0}{1}'.format(apiurl, test['url']))
+        print('Method: {0}'.format(method))
         print('Authorization: {0}'.format(test['authorization']))
-        print('Payload')
+        print('Payload:')
         print(test['payload'])
-        print('Response')
+        print('Response:')
         for item in response:
             print('{0}: {1}'.format(item, response[item]))
         print('')
