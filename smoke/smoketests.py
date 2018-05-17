@@ -94,10 +94,15 @@ class SmokeTests(object):
         total_errors = len(errors)
         # display errors
         if total_errors > 0:
-            print('Errors!')
-            print('Tests: {0} | Errors: {1}'.format(total_tests, total_errors))
+            sys.stderr.write('Errors!\r')
+            print('')
+            sys.stderr.write(
+                'Tests: {0} | Errors: {1}\r'.format(total_tests, total_errors)
+            )
+            print('')
             for error in errors:
-                print(error)
+                sys.stderr.write('{0}\r'.format(error))
+            sys.stderr.write('\n')
         # exit program
         if total_errors > 0:
             sys.exit(1)
