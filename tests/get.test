@@ -1,0 +1,11 @@
+[list]
+url: /posts
+method: GET
+authorization: Bearer {token}
+payload:
+tests: 
+	http_status: 201
+	headers.Content-Type: True
+	0: True
+	0.id: True
+	0.id: 1

@@ -18,15 +18,17 @@ def get_path(filename):
 
 
 @click.command()
+@click.option('-f', '--filter', 'filter', default=None, help='Run just this test')
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
-def cli(verbose):
+def cli(filter, verbose):
     "Run your smoke tests from python"
     config = AppConfig(get_path('config/app.conf'))
     tests = SmokeTests(
         get_path('tests'),
-        ApiCalls(config.appurl(), config.vars()),
-        verbose
+        ApiCalls(config.appurl(), config.vars())
     )
+    tests.set_verbose(verbose)
+    tests.set_filter(filter)
     tests.run(Config())
 
 

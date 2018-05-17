@@ -16,7 +16,7 @@ from smoke.utils import Utils
 class SmokeTests(object):
     "Class to run the tests"
 
-    def __init__(self, tests_src, api_calls, verbose):
+    def __init__(self, tests_src, api_calls):
         "Entry point"
         self.pytest = Tests()
         self.utils = Utils()
@@ -25,7 +25,14 @@ class SmokeTests(object):
         self.total_tests = 0
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
+
+    def set_verbose(self, verbose):
+        "Set the verbose flag"
         self.verbose = verbose
+
+    def set_filter(self, filtered_class):
+        "Set the filtered class to run"
+        self.filtered_class = filtered_class
 
     @staticmethod
     def list_tests(path):
@@ -33,11 +40,8 @@ class SmokeTests(object):
         return [f for f in listdir(path) if isfile(join(path, f))]
 
     def run(self, config):
-        "Load and pysmoke the tests"
-        for test_file in self.tests_list:
-            config.load(join(self.tests_src, test_file))
-            self.compose(config, test_file)
-        # pysmoke the tests
+        "Load and run the tests"
+        self.load_tests(config)
         errors = self.run_tests()
         self.show_errors(self.total_tests, errors)
 
@@ -49,6 +53,19 @@ class SmokeTests(object):
             self.tests_to_run[index] = self.options(config, section)
             count += 1
         return None
+
+    def load_tests(self, config):
+        "Load the tests to run"
+        # run just the filtered class
+        if self.filtered_class:
+            config.load(join(self.tests_src, self.filtered_class))
+            self.compose(config, self.filtered_class)
+            return
+        # run all the tests
+        for test_file in self.tests_list:
+            config.load(join(self.tests_src, test_file))
+            self.compose(config, test_file)
+        return
 
     @staticmethod
     def options(config, section):
@@ -94,15 +111,12 @@ class SmokeTests(object):
         total_errors = len(errors)
         # display errors
         if total_errors > 0:
-            sys.stderr.write('Errors!\r')
-            print('')
-            sys.stderr.write(
-                'Tests: {0} | Errors: {1}\r'.format(total_tests, total_errors)
-            )
-            print('')
+            print('Executed {0} tests found {1} errors'.format(
+                total_tests,
+                total_errors
+            ))
             for error in errors:
-                sys.stderr.write('{0}\r'.format(error))
-            sys.stderr.write('\n')
+                print('{0}'.format(error))
         # exit program
         if total_errors > 0:
             sys.exit(1)

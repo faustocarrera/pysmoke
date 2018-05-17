@@ -5,6 +5,7 @@ Handle the configuration file
 """
 
 import configparser
+from pathlib import Path
 
 
 class Config(object):
@@ -14,9 +15,11 @@ class Config(object):
 
     def load(self, config_file):
         "Load config file and parse the content"
-        self.config_parser = configparser.RawConfigParser()
-        self.config_parser.read(config_file)
-        return self
+        filepath = Path(config_file)
+        if filepath.resolve():
+            self.config_parser = configparser.RawConfigParser()
+            self.config_parser.read(config_file)
+            return self
 
     def sections(self):
         "Get the config sections"
