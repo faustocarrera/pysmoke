@@ -25,6 +25,9 @@ class SmokeTests(object):
         self.total_tests = 0
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
+        self.verbose = False
+        self.filtered_class = None
+        self.single_test = None
 
     def set_verbose(self, verbose):
         "Set the verbose flag"
@@ -48,14 +51,25 @@ class SmokeTests(object):
     def compose(self, config, filename):
         "Parse config sections"
         count = 0
+        # check if we have a single test to run
+        if self.single_test:
+            index = '{0}::{1}::{2}'.format(filename, count, self.single_test)
+            self.tests_to_run[index] = self.options(config, self.single_test)
+            return
+        # load all sections
         for section in config.sections():
             index = '{0}::{1}::{2}'.format(filename, count, section)
             self.tests_to_run[index] = self.options(config, section)
             count += 1
-        return None
+        return
 
     def load_tests(self, config):
         "Load the tests to run"
+        # check if we have a single test to execute
+        if ':' in self.filtered_class:
+            parts = self.filtered_class.split(':')
+            self.filtered_class = parts[0]
+            self.single_test = parts[1]
         # run just the filtered class
         if self.filtered_class:
             config.load(join(self.tests_src, self.filtered_class))

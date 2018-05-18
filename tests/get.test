@@ -9,3 +9,13 @@ tests:
 	0: True
 	0.id: True
 	0.id: 1
+
+[error-404]
+url: /posts
+method: GET
+authorization:
+payload:
+tests: 
+	http_status: 404
+	headers.Content-Type: True
+	headers.Location: False

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Burn motherfucker, burn
+Pysmoke command entry point
 """
 
 import os
@@ -18,9 +18,9 @@ def get_path(filename):
 
 
 @click.command()
-@click.option('-f', '--filter', 'filter', default=None, help='Run just this test')
+@click.option('-f', '--filter', 'filtered_class', default=None, help='Run just this test')
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
-def cli(filter, verbose):
+def cli(filtered_class, verbose):
     "Run your smoke tests from python"
     config = AppConfig(get_path('config/app.conf'))
     tests = SmokeTests(
@@ -28,7 +28,7 @@ def cli(filter, verbose):
         ApiCalls(config.appurl(), config.vars())
     )
     tests.set_verbose(verbose)
-    tests.set_filter(filter)
+    tests.set_filter(filtered_class)
     tests.run(Config())
 
 
