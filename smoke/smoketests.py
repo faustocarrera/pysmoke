@@ -9,6 +9,7 @@ import sys
 from os import listdir
 from os.path import isfile
 from os.path import join
+from multiprocessing.dummy import Pool as ThreadPool
 from smoke.tests import Tests
 from smoke.utils import Utils
 
@@ -45,7 +46,8 @@ class SmokeTests(object):
     def run(self, config):
         "Load and run the tests"
         self.load_tests(config)
-        errors = self.run_tests()
+        # errors = self.run_tests()
+        errors = self.run_thread()
         self.show_errors(self.total_tests, errors)
 
     def compose(self, config, filename):
@@ -91,7 +93,41 @@ class SmokeTests(object):
             count += 1
         return options
 
-    def run_tests(self):
+    def run_thread(self):
+        "Run the tests"
+        tests_to_run = sorted(self.tests_to_run.keys())
+        pool = ThreadPool(4)
+        pool.map(self.run_tests, tests_to_run)
+        pool.close()
+        pool.join()
+        return self.pytest.get_errors()
+    
+    def run_tests(self, key):
+        "Run the test"
+        # display wich test are we running
+        index_parts = key.split('::')
+        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[2])
+        # end display
+        test = self.tests_to_run[key]
+        tests = self.utils.parse_tests_string(test['tests'])
+        # total tests to run
+        self.total_tests += len(tests)
+        # response = self.utils.get_dummy_response()
+        response = self.api_calls.call(test)
+        # verbose mode
+        if self.verbose:
+            self.__verbose(
+                test['method'],
+                index_parts[0],
+                index_parts[2],
+                self.api_calls.get_api_url(),
+                test,
+                response
+            )
+        # run tests  on the response
+        self.pytest.test(self.verbose, response, tests, error_index)
+    
+    def run_tests__(self):
         "Run the tests"
         for key in sorted(self.tests_to_run.keys()):
             # display wich test are we running
