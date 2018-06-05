@@ -18,7 +18,7 @@ def get_path(filename):
 
 
 @click.command()
-@click.option('-f', '--filter', 'filtered_class', default=None, help='Run just this test')
+@click.option('-f', '--filter', 'filtered_class', default='', help='Run just this test')
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
 def cli(filtered_class, verbose):
     "Run your smoke tests from python"
