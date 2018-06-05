@@ -26,7 +26,7 @@ class SmokeTests(object):
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
         self.verbose = False
-        self.filtered_class = None
+        self.filtered_class = ''
         self.single_test = None
 
     def set_verbose(self, verbose):
