@@ -4,10 +4,10 @@
 App config
 """
 
-from .config import Config
+from .testconfig import TestConfig
 
 
-class AppConfig(Config):
+class AppConfig(TestConfig):
     "Application configuration"
 
     def __init__(self, config_file):

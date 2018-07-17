@@ -17,8 +17,8 @@ __Config example:__
 url: https://jsonplaceholder.typicode.com
 
 [vars]
-post_id: 1
-user_id: 1
+user_name: test@test.com
+password: test1234
 ```
 
 __Test file example:__
@@ -28,7 +28,7 @@ __Test file example:__
 url: /auth/login
 method: POST
 authorization: None
-payload: {"username": "test@test.com", "password": "test1234"}
+payload: {"username": "%username%", "password": "%password%"}
 tests:
 	http_status: 200
 	headers.Location: true
@@ -38,12 +38,12 @@ tests:
 
 __Commands:__
 
-| Command | Options | Description |
-|---------|---------|-------------|
-| `$ python pysmoke.py` | --help | Display help menu |
-| `$ python pysmoke.py`| | Run all the tests in all the groups |
-| `$ python pysmoke.py` | --verbose | Run all the tests on verbose mode |
-| `$ python pysmoke.py` | --filter get.test | Run all the tests on the get.test group |
+| Command               | Options                | Description                             |
+|-----------------------|------------------------|-----------------------------------------|
+| `$ python pysmoke.py` | --help                 | Display help menu                       |
+| `$ python pysmoke.py` |                        | Run all the tests in all the groups     |
+| `$ python pysmoke.py` | --verbose              | Run all the tests on verbose mode       |
+| `$ python pysmoke.py` | --filter get.test      | Run all the tests on the get.test group |
 | `$ python pysmoke.py` | --filter get.test:list | Run the list test on the get.test group |
 
 ## How to start with the project

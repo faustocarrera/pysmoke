@@ -4,6 +4,6 @@
 Helper entry point
 """
 
-from .config import Config
-from .app import AppConfig
+from .testconfig import TestConfig
+from .appconfig import AppConfig
 from .apicalls import ApiCalls

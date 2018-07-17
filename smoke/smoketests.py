@@ -17,12 +17,13 @@ from smoke.utils import Utils
 class SmokeTests(object):
     "Class to run the tests"
 
-    def __init__(self, tests_src, api_calls):
+    def __init__(self, tests_src, api_calls, tests_config):
         "Entry point"
         self.pytest = Tests()
         self.utils = Utils()
         self.tests_src = tests_src
         self.api_calls = api_calls
+        self.tests_config = tests_config
         self.total_tests = 0
         self.tests_list = self.list_tests(tests_src)
         self.tests_to_run = {}
@@ -43,9 +44,9 @@ class SmokeTests(object):
         "Return a list of test on the folder"
         return [f for f in listdir(path) if isfile(join(path, f))]
 
-    def run(self, config):
+    def run(self):
         "Load and run the tests"
-        self.load_tests(config)
+        self.load_tests(self.tests_config)
         # errors = self.run_tests()
         errors = self.run_thread()
         self.show_errors(self.total_tests, errors)

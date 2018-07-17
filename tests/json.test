@@ -1,7 +1,7 @@
 [list]
 url: /posts
 method: GET
-authorization: Bearer {token}
+authorization: Bearer %token%
 payload:
 tests: 
 	http_status: 200
@@ -21,7 +21,7 @@ tests:
 	headers.Location: False
 	
 [post]
-url: /posts/{post_id}
+url: /posts/%post_id%
 method: GET
 authorization:
 payload:
@@ -35,7 +35,7 @@ tests:
 	body: True
 
 [comments]
-url: /posts/{post_id}/comments
+url: /posts/%post_id%/comments
 method: GET
 authorization:
 payload:
@@ -50,7 +50,7 @@ tests:
 	0.body: True
 	
 [userposts]
-url: /posts?userId={user_id}
+url: /posts?userId=%user_id%
 method: GET
 authorization:
 payload:
@@ -67,7 +67,7 @@ tests:
 url: /posts
 method: POST
 authorization:
-payload: {"title": "This is a test title", "body": "This is a test body", "userId": "{user_id}"}
+payload: {"title": "This is a test title", "body": "This is a test body", "userId": "%user_id%"}
 tests:
 	http_status: 201
 	headers.Content-Type: True
@@ -78,7 +78,7 @@ tests:
 	id: 101
 
 [updatepost]
-url: /posts/{post_id}
+url: /posts/%post_id%
 method: PUT
 authorization:
 payload: {"title": "This is a test title", "body": "This is a test body"}
@@ -91,7 +91,7 @@ tests:
 	id: 1
 
 [deletepost]
-url: /posts/{post_id}
+url: /posts/%post_id%
 method: DELETE
 authorization:
 payload:

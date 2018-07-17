@@ -58,9 +58,9 @@ class ApiCalls(object):
 
     def __vars_replace(self, string):
         "Find and replace config vars from strings"
-        finder = re.findall('{([a-zA-Z0-9_]+)}', string)
+        finder = re.findall('%([a-zA-Z0-9_]+)%', string)
         for match in finder:
-            find = '{%s}' % match
+            find = '%{0}%'.format(match)
             string = string.replace(find, self.app_vars[match])
         return string
 

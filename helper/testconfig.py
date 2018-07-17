@@ -8,7 +8,7 @@ import configparser
 from pathlib import Path
 
 
-class Config(object):
+class TestConfig(object):
     "Class to handle the configuration files"
 
     config_parser = None
