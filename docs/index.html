@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pysmoke :: REST API smoke tests</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<style media="screen" type="text/css">
+		pre.code {
+			display: block;
+			background-color: #f6f8fa;
+			padding: 0.5em 1em;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+		code.with-bg {
+			background-color: #f6f8fa;
+			display: block;
+			padding: 0.5em 1em;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			margin-bottom: 1em;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="w-100">&nbsp;</div>
+		</div>
+		<div class="jumbotron">
+			<h1>PySmoke</h1>
+			<p>A command line tool to run smoke tests in your REST API using python and just config files.</p>
+		</div>
+		<div class="row">
+			<!-- menu -->
+			<div class="col-sm-3">
+				<ul class="list-group">
+					<li class="list-group-item"><a href="#about">About</a></li>
+					<li class="list-group-item"><a href="#usage">Using the library</a></li>
+					<li class="list-group-item"><a href="#how-to-start">How to start</a></li>
+					<li class="list-group-item"><a href="https://github.com/faustocarrera/pysmoke" target="_blank">Github</a></li>
+				</ul>
+			</div>
+			<!-- content -->
+			<div class="col-sm-9">
+				<!-- about -->
+				<h2 id="about">About PySmoke</h2>
+				<p>The idea was born during a manual test with the testers of my current project, we where looking for a solution to automate smoke tests that requires little to no programming skills to work with and let the testers team check basic stuff on the API side with a basic fixture.</p>
+				<p>This is a work in progress and I'm working on it during my spare time.</p>
+				<hr>
+				<!-- usage -->
+				<h2 id="usage">Usage</h2>
+				<p>You have a single config file <code>app.conf</code> located on the <code>config/</code> folder holds the API URL and other variables used on your tests, and several test files called test groups, located on the <code>tests/</code> folder. All the tests files have the .test extension.</p>
+				<p><strong>Config example</strong></p>
+				<pre class="code">
+					<code>
+[app]
+url: https://jsonplaceholder.typicode.com
+						
+[vars]
+post_id: 1
+user_id: 1
+					</code>
+				</pre>
+				<p><strong>Test file example</strong></p>
+				<pre class="code">
+					<code>
+[login]
+url: /auth/login
+method: POST
+authorization: None
+payload: {"username": "test@test.com", "password": "test1234"}
+tests:
+	http_status: 200
+	headers.Location: true
+	result: true
+	result.version: true
+					</code>
+				</pre>
+				<p><strong>Commands</strong></p>
+				<table class="table">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">Command</th>
+							<th scope="col">Options</th>
+							<th scope="col">Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row"><code>$ python pysmoke.py</code></th>
+							<td>--help</td>
+							<td>Display help menu</td>
+						</tr>
+						<tr>
+							<th scope="row"><code>$ python pysmoke.py</code></th>
+							<td></td>
+							<td>Run all tests in all groups</td>
+						</tr>
+						<tr>
+							<th scope="row"><code>$ python pysmoke.py</code></th>
+							<td>--verbose</td>
+							<td>Run all tests in verbose mode</td>
+						</tr>
+						<tr>
+							<th scope="row"><code>$ python pysmoke.py</code></th>
+							<td>--filter get.test</td>
+							<td>Run all tests on the get.test group</td>
+						</tr>
+						<tr>
+							<th scope="row"><code>$ python pysmoke.py</code></th>
+							<td>--filter get.test:list</td>
+							<td>Run the list test on the get.test group</td>
+						</tr>
+					</tbody>
+				</table>
+				<!-- How to start -->
+				<h2 id="how-to-start">How to start</h2>
+				<p>Clone the project:</p>
+				<code class="with-bg">
+					$ git clone git@github.com:faustocarrera/pysmoke.git
+				</code>
+				
+				<p>Or download it:</p>
+				<code class="with-bg">
+					$ wget https://github.com/faustocarrera/pysmoke/archive/master.zip
+				</code>
+				
+				<p>You could use virtualenv or install everything globally.</p>
+				<code class="with-bg">
+					$ virtualenv env -p python3
+					<br />
+					$ env/bin/pip install -r requirements
+				</code>
+				
+				<p>Setup your API url on the config/app.conf file.</p>
+				<p>Modify or create test inside the tests folder, all the tests must have the .test extension.</p>
+				<p>Run the app.</p>
+				<code class="with-bg">
+					$ env/bin/python pysmoke.py
+				</code>
+				
+				<p>Run it on verbose mode.</p>
+				<code class="with-bg">
+					$ env/bin/python pysmoke.py -v
+				</code>
+			</div>
+		</div>
+		<div class="alert alert-ligth" role="alert">
+  			PySmoke :: REST API Smoke tests
+		</div>
+	</div>
+	<!-- github ribbon -->
+	<a href="https://github.com/faustocarrera/pysmoke"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+	<!-- javascript -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>
