@@ -5,6 +5,8 @@ Pysmoke
 Test your API endpoints from the command line
 """
 
+from smoke import utils
+from smoke import SmokeTests
 import click
 
 
@@ -15,10 +17,13 @@ import click
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
 def cli(config_path, source_path, filtered_class, verbose):
     "Pysmoke entry point"
-    print(config_path)
-    print(source_path)
-    print(filtered_class)
-    print(verbose)
+    smoke = SmokeTests(
+        utils.get_path(__file__, config_path),
+        utils.get_path(__file__, source_path)
+    )
+    smoke.set_filter(filtered_class)
+    smoke.set_verbose(verbose)
+    smoke.debug()
 
 
 if __name__ == '__main__':
