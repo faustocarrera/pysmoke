@@ -4,6 +4,9 @@
 Pysmoke class
 """
 
+from __future__ import print_function
+import sys
+from multiprocessing.dummy import Pool as ThreadPool
 from . import utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
@@ -17,8 +20,11 @@ class SmokeTests(object):
         self.tests_config = TestConfig()
         self.app_config = AppConfig(config_path)
         self.api_calls = ApiCalls(
-            self.app_config.appurl(), self.app_config.vars())
+            self.app_config.appurl(),
+            self.app_config.vars()
+        )
         self.tests_path = tests_path
+        self.tests_to_run = {}
         self.verbose = False
         self.filtered_class = ''
         self.single_test = None
@@ -38,8 +44,9 @@ class SmokeTests(object):
 
     def run(self):
         "Load and run the tests"
-        tests = self.load_tests(self.tests_path)
-        print(tests)
+        self.tests_to_run = self.load_tests(self.tests_path)
+        errors = self.run_thread(self.tests_to_run)
+        self.show_errors(len(self.tests_to_run), errors)
 
     def load_tests(self, test_path):
         "Load tests from config files"
@@ -61,13 +68,29 @@ class SmokeTests(object):
         # if we have a single test
         if self.single_test:
             index = '{0}::{1}::{2}'.format(filename, 0, self.single_test)
-            tests_to_run[index] = self.options(self.tests_config, self.single_test)
+            tests_to_run[index] = self.options(
+                self.tests_config,
+                self.single_test
+            )
             return tests_to_run
         # load all sections
         for count, section in enumerate(self.tests_config.sections()):
             index = '{0}::{1}::{2}'.format(filename, count, section)
             tests_to_run[index] = self.options(self.tests_config, section)
         return tests_to_run
+
+    def run_thread(self, tests):
+        "Run the tests"
+        tests_to_run = sorted(tests.keys())
+        pool = ThreadPool(4)
+        pool.map(self.run_tests, tests_to_run)
+        pool.close()
+        pool.join()
+        return []
+    
+    def run_tests(self, key):
+        "Run the test"
+        print('Running {0} :: {1} \r\n'.format(key, self.tests_to_run[key]))
 
     @staticmethod
     def options(config, section):
@@ -77,9 +100,33 @@ class SmokeTests(object):
             options[option] = config.get(section, option)
         return options
 
-    def debug(self):
-        "Print the data entered to the module"
-        print(self.app_config.debug())
-        print(self.tests_path)
-        print(self.verbose)
-        print(self.filtered_class)
+    @staticmethod
+    def show_errors(total_tests, errors):
+        "Show error in the console"
+        total_errors = len(errors)
+        # display errors
+        if total_errors > 0:
+            print('Executed {0} tests found {1} errors'.format(
+                total_tests,
+                total_errors
+            ))
+            for error in errors:
+                print('{0}'.format(error))
+        # exit program
+        if total_errors > 0:
+            sys.exit(1)
+        sys.exit(0)
+
+    @staticmethod
+    def __verbose(method, filename, testname, apiurl, test, response):
+        "Print request and response data"
+        print('Test: {0} :: {1}'.format(filename, testname))
+        print('Endpoint: {0}{1}'.format(apiurl, test['url']))
+        print('Method: {0}'.format(method))
+        print('Authorization: {0}'.format(test['authorization']))
+        print('Payload:')
+        print(test['payload'])
+        print('Response:')
+        for item in response:
+            print('{0}: {1}'.format(item, response[item]))
+        print('')

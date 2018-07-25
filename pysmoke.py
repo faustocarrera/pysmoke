@@ -23,7 +23,6 @@ def cli(config_path, source_path, filtered_class, verbose):
     )
     smoke.set_filter(filtered_class)
     smoke.set_verbose(verbose)
-    # smoke.debug()
     smoke.run()
 
 
