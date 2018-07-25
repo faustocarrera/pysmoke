@@ -4,6 +4,7 @@
 Handle the configuration file
 """
 
+from os.path import join
 import configparser
 from pathlib import Path
 
@@ -13,8 +14,9 @@ class TestConfig(object):
 
     config_parser = None
 
-    def load(self, config_file):
+    def load(self, *args):
         "Load config file and parse the content"
+        config_file = join(*args)
         filepath = Path(config_file)
         if filepath.resolve():
             self.config_parser = configparser.RawConfigParser()

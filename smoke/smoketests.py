@@ -4,7 +4,6 @@
 Pysmoke class
 """
 
-from os.path import join
 from . import utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
@@ -48,29 +47,26 @@ class SmokeTests(object):
         tests_files = utils.list_files(test_path)
         # just one filtered class
         if self.filtered_class:
-            self.tests_config.load(join(self.tests_path, self.filtered_class))
+            self.tests_config.load(self.tests_path, self.filtered_class)
             return self.compose(self.filtered_class)
         # run all the tests
         for tests_file in tests_files:
-            self.tests_config.load(join(self.tests_path, tests_file))
+            self.tests_config.load(self.tests_path, tests_file)
             tests_to_run.update(self.compose(tests_file))
         return tests_to_run
 
     def compose(self, filename):
         "Parse config sections"
         tests_to_run = {}
-        count = 0
         # if we have a single test
         if self.single_test:
-            index = '{0}::{1}::{2}'.format(filename, count, self.single_test)
-            tests_to_run[index] = self.options(
-                self.tests_config, self.single_test)
+            index = '{0}::{1}::{2}'.format(filename, 0, self.single_test)
+            tests_to_run[index] = self.options(self.tests_config, self.single_test)
             return tests_to_run
         # load all sections
-        for section in self.tests_config.sections():
+        for count, section in enumerate(self.tests_config.sections()):
             index = '{0}::{1}::{2}'.format(filename, count, section)
             tests_to_run[index] = self.options(self.tests_config, section)
-            count += 1
         return tests_to_run
 
     @staticmethod
