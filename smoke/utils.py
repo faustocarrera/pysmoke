@@ -6,6 +6,9 @@ Utils functions
 
 import os
 import re
+from os import listdir
+from os.path import isfile
+from os.path import join
 
 
 def get_path(basepath, filename):
@@ -21,3 +24,7 @@ def vars_replace(string, variables):
         if variables.has_key(match):
             string = string.replace(find, variables[match])
     return string
+
+def list_files(path):
+    "Return a list of test on the folder"
+    return [f for f in listdir(path) if isfile(join(path, f))]
