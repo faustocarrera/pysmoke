@@ -111,12 +111,11 @@ class SmokeTests(object):
                 test['method'],
                 index_parts[0],
                 index_parts[2],
-                self.api_calls.get_api_url(),
                 test,
                 response
             )
         # run tests  on the response
-        self.validator.test(self.verbose, response, tests, error_index)
+        self.validator.test(self.verbose, response['response'], tests, error_index)
 
     @staticmethod
     def options(config, section):
@@ -144,15 +143,13 @@ class SmokeTests(object):
         sys.exit(0)
 
     @staticmethod
-    def __verbose(method, filename, testname, apiurl, test, response):
+    def __verbose(method, filename, testname, test, response):
         "Print request and response data"
         print('Test: {0} :: {1}'.format(filename, testname))
-        print('Endpoint: {0}{1}'.format(apiurl, test['url']))
+        print('Endpoint: {0}'.format(response['url']))
         print('Method: {0}'.format(method))
         print('Authorization: {0}'.format(test['authorization']))
-        print('Payload:')
-        print(test['payload'])
-        print('Response:')
-        for item in response:
-            print('{0}: {1}'.format(item, response[item]))
+        print('Payload: {0}'.format(response['payload']))
+        for item in response['response']:
+            print('Response {0}: {1}'.format(item, response['response'][item]))
         print('')

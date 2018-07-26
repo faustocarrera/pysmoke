@@ -25,13 +25,15 @@ class ApiCalls(object):
         payload = self.convert_payload(self.utils.vars_replace(test['payload'], self.app_vars))
         if method in self.methods:
             if method == 'GET':
-                return self.get(url, headers, payload)
+                response = self.get(url, headers, payload)
             if method == 'POST':
-                return self.post(url, headers, payload)
+                response = self.post(url, headers, payload)
             if method == 'PUT':
-                return self.put(url, headers, payload)
+                response = self.put(url, headers, payload)
             if method == 'DELETE':
-                return self.delete(url, headers, payload)
+                response = self.delete(url, headers, payload)
+            # return response
+            return {'url': url, 'payload': payload, 'response': response}
         raise Exception('Error, method not recognized')
 
     def get(self, url, headers, payload):
