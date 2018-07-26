@@ -8,7 +8,7 @@ from .testconfig import TestConfig
 
 
 class AppConfig(TestConfig):
-    "Application configuration"
+    "Global app configuration"
 
     def __init__(self, config_file):
         "Load app config"
@@ -25,3 +25,7 @@ class AppConfig(TestConfig):
         for var in variables:
             app_variables[var] = self.get('vars', var)
         return app_variables
+
+    def debug(self):
+        "Module debug"
+        return  {'app_url': self.appurl(), 'vars': self.vars()}

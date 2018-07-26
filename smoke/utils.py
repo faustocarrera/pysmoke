@@ -1,11 +1,38 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Utils class
+Utils functions
 """
+
+import os
+import re
+from os import listdir
+from os.path import isfile
+from os.path import join
+
 
 class Utils(object):
     "Utils class"
+
+    @staticmethod
+    def get_path(basepath, filename):
+        "Return file real path"
+        return os.path.join(os.path.dirname(os.path.realpath(basepath)), filename)
+
+    @staticmethod
+    def vars_replace(string, variables):
+        "Find and replace config variables from strings"
+        finder = re.findall('%([a-zA-Z0-9_]+)%', string)
+        for match in finder:
+            find = '%{0}%'.format(match)
+            if match in variables.keys():
+                string = string.replace(find, variables[match])
+        return string
+
+    @staticmethod
+    def list_files(path):
+        "Return a list of test on the folder"
+        return [f for f in listdir(path) if isfile(join(path, f))]
 
     def parse_tests_string(self, tests_string):
         "Parse tests string to convert it to object"
@@ -39,34 +66,3 @@ class Utils(object):
             pass
         # just return the value
         return value
-
-    @staticmethod
-    def get_dummy_response():
-        "Dummy server response"
-        return {
-            'elapsed_time': 0.10376,
-            'http_status': 200,
-            'headers': {
-                'Access-Control-Allow-Headers': 'ORIGIN, X-REQUESTED-WITH, AUTHORIZATION',
-                'Keep-Alive': 'timeout=5, max=100',
-                'Access-Control-Max-Age': '60000',
-                'Content-Type': 'application/json',
-                'expires': '-1',
-                'Access-Control-Allow-Credentials': 'true',
-                'Server': 'Apache/2.4.18 (Ubuntu)',
-                'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
-                'Content-Length': '81',
-                'pragma': 'no-cache',
-                'Date': 'Sat, 14 Apr 2018 20:43:57 GMT',
-                'Cache-Control': 'private, must-revalidate',
-                'Connection': 'Keep-Alive',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'response': {
-                'metadata': None,
-                'result': {
-                    'version': '0.8.0',
-                    'API': 'Sistema Nacional de Turnos'
-                }
-            }
-        }

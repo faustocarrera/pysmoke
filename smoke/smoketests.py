@@ -6,30 +6,33 @@ Pysmoke class
 
 from __future__ import print_function
 import sys
-from os import listdir
-from os.path import isfile
-from os.path import join
 from multiprocessing.dummy import Pool as ThreadPool
-from smoke.tests import Tests
-from smoke.utils import Utils
+from .utils import Utils
+from .testconfig import TestConfig
+from .appconfig import AppConfig
+from .apicalls import ApiCalls
+from .validator import Validator
 
 
 class SmokeTests(object):
     "Class to run the tests"
 
-    def __init__(self, tests_src, api_calls, tests_config):
-        "Entry point"
-        self.pytest = Tests()
+    def __init__(self, basepath, config_path, tests_path):
+        self.validator = Validator()
         self.utils = Utils()
-        self.tests_src = tests_src
-        self.api_calls = api_calls
-        self.tests_config = tests_config
-        self.total_tests = 0
-        self.tests_list = self.list_tests(tests_src)
+        self.tests_config = TestConfig()
+        self.app_config = AppConfig(self.utils.get_path(basepath, config_path))
+        self.api_calls = ApiCalls(
+            self.app_config.appurl(),
+            self.app_config.vars(),
+            self.utils
+        )
+        self.tests_path = self.utils.get_path(basepath, tests_path)
         self.tests_to_run = {}
         self.verbose = False
         self.filtered_class = ''
         self.single_test = None
+        self.total_tests = 0
 
     def set_verbose(self, verbose):
         "Set the verbose flag"
@@ -37,71 +40,58 @@ class SmokeTests(object):
 
     def set_filter(self, filtered_class):
         "Set the filtered class to run"
-        self.filtered_class = filtered_class
-
-    @staticmethod
-    def list_tests(path):
-        "Return a list of test on the folder"
-        return [f for f in listdir(path) if isfile(join(path, f))]
+        if filtered_class and ':' in filtered_class:
+            parts = filtered_class.split(':')
+            self.filtered_class = parts[0]
+            self.single_test = parts[1]
+        else:
+            self.filtered_class = filtered_class
 
     def run(self):
         "Load and run the tests"
-        self.load_tests(self.tests_config)
-        # errors = self.run_tests()
-        errors = self.run_thread()
+        self.tests_to_run = self.load_tests(self.tests_path)
+        errors = self.run_thread(self.tests_to_run)
         self.show_errors(self.total_tests, errors)
 
-    def compose(self, config, filename):
-        "Parse config sections"
-        count = 0
-        # check if we have a single test to run
-        if self.single_test:
-            index = '{0}::{1}::{2}'.format(filename, count, self.single_test)
-            self.tests_to_run[index] = self.options(config, self.single_test)
-            return
-        # load all sections
-        for section in config.sections():
-            index = '{0}::{1}::{2}'.format(filename, count, section)
-            self.tests_to_run[index] = self.options(config, section)
-            count += 1
-        return
-
-    def load_tests(self, config):
-        "Load the tests to run"
-        # check if we have a single test to execute
-        if ':' in self.filtered_class:
-            parts = self.filtered_class.split(':')
-            self.filtered_class = parts[0]
-            self.single_test = parts[1]
-        # run just the filtered class
+    def load_tests(self, test_path):
+        "Load tests from config files"
+        tests_to_run = {}
+        tests_files = self.utils.list_files(test_path)
+        # just one filtered class
         if self.filtered_class:
-            config.load(join(self.tests_src, self.filtered_class))
-            self.compose(config, self.filtered_class)
-            return
+            self.tests_config.load(self.tests_path, self.filtered_class)
+            return self.compose(self.filtered_class)
         # run all the tests
-        for test_file in self.tests_list:
-            config.load(join(self.tests_src, test_file))
-            self.compose(config, test_file)
-        return
+        for tests_file in tests_files:
+            self.tests_config.load(self.tests_path, tests_file)
+            tests_to_run.update(self.compose(tests_file))
+        return tests_to_run
 
-    @staticmethod
-    def options(config, section):
-        "Get options"
-        options = {}
-        count = 0
-        for option in config.options(section):
-            options[option] = config.get(section, option)
-            count += 1
-        return options
+    def compose(self, filename):
+        "Parse config sections"
+        tests_to_run = {}
+        # if we have a single test
+        if self.single_test:
+            index = '{0}::{1}::{2}'.format(filename, 0, self.single_test)
+            tests_to_run[index] = self.options(
+                self.tests_config,
+                self.single_test
+            )
+            return tests_to_run
+        # load all sections
+        for count, section in enumerate(self.tests_config.sections()):
+            index = '{0}::{1}::{2}'.format(filename, count, section)
+            tests_to_run[index] = self.options(self.tests_config, section)
+        return tests_to_run
 
-    def run_thread(self):
+    def run_thread(self, tests):
         "Run the tests"
-        tests_to_run = sorted(self.tests_to_run.keys())
+        tests_to_run = sorted(tests.keys())
         pool = ThreadPool(4)
         pool.map(self.run_tests, tests_to_run)
         pool.close()
         pool.join()
-        return self.pytest.get_errors()
+        return self.validator.get_errors()
     
     def run_tests(self, key):
         "Run the test"
@@ -113,7 +103,7 @@ class SmokeTests(object):
         tests = self.utils.parse_tests_string(test['tests'])
         # total tests to run
         self.total_tests += len(tests)
-        # response = self.utils.get_dummy_response()
+        # make the call
         response = self.api_calls.call(test)
         # verbose mode
         if self.verbose:
@@ -121,12 +111,19 @@ class SmokeTests(object):
                 test['method'],
                 index_parts[0],
                 index_parts[2],
-                self.api_calls.get_api_url(),
                 test,
                 response
             )
         # run tests  on the response
-        self.pytest.test(self.verbose, response, tests, error_index)
+        self.validator.test(self.verbose, response['response'], tests, error_index)
+
+    @staticmethod
+    def options(config, section):
+        "Get options"
+        options = {}
+        for option in config.options(section):
+            options[option] = config.get(section, option)
+        return options
 
     @staticmethod
     def show_errors(total_tests, errors):
@@ -146,15 +143,13 @@ class SmokeTests(object):
         sys.exit(0)
 
     @staticmethod
-    def __verbose(method, filename, testname, apiurl, test, response):
+    def __verbose(method, filename, testname, test, response):
         "Print request and response data"
         print('Test: {0} :: {1}'.format(filename, testname))
-        print('Endpoint: {0}{1}'.format(apiurl, test['url']))
+        print('Endpoint: {0}'.format(response['url']))
         print('Method: {0}'.format(method))
         print('Authorization: {0}'.format(test['authorization']))
-        print('Payload:')
-        print(test['payload'])
-        print('Response:')
-        for item in response:
-            print('{0}: {1}'.format(item, response[item]))
+        print('Payload: {0}'.format(response['payload']))
+        for item in response['response']:
+            print('Response {0}: {1}'.format(item, response['response'][item]))
         print('')

@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
-Pysmoke entry point
-"""
 
-from .smoketests import SmokeTests
 from .utils import Utils
+from .testconfig import TestConfig
+from .appconfig import AppConfig
+from .apicalls import ApiCalls
+from .validator import Validator
+from .smoketests import SmokeTests

@@ -4,9 +4,8 @@
 Test class
 """
 
-import sys
 
-class Tests(object):
+class Validator(object):
     "Class to validate the tests"
 
     def __init__(self):

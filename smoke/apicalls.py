@@ -5,32 +5,36 @@ Module that make the API calls
 """
 
 import json
-import re
 import requests
 
 
 class ApiCalls(object):
     "Class to make the request to the API"
 
-    def __init__(self, app_url, app_vars):
+    def __init__(self, app_url, app_vars, utils):
         self.app_url = app_url
         self.app_vars = app_vars
+        self.utils = utils
+        self.methods = ['GET', 'POST', 'PUT', 'DELETE']
 
     def call(self, test):
         "Call entry point"
-        url = self.app_url + self.__vars_replace(test['url'])
+        url = self.app_url + self.utils.vars_replace(test['url'], self.app_vars)
         method = test['method']
-        headers = {'authorization': self.__vars_replace(test['authorization'])}
-        payload = self.convert_payload(self.__vars_replace(test['payload']))
-        if method == 'GET':
-            return self.get(url, headers, payload)
-        if method == 'POST':
-            return self.post(url, headers, payload)
-        if method == 'PUT':
-            return self.put(url, headers, payload)
-        if method == 'DELETE':
-            return self.delete(url, headers, payload)
-        return None
+        headers = {'authorization': self.utils.vars_replace(test['authorization'], self.app_vars)}
+        payload = self.convert_payload(self.utils.vars_replace(test['payload'], self.app_vars))
+        if method in self.methods:
+            if method == 'GET':
+                response = self.get(url, headers, payload)
+            if method == 'POST':
+                response = self.post(url, headers, payload)
+            if method == 'PUT':
+                response = self.put(url, headers, payload)
+            if method == 'DELETE':
+                response = self.delete(url, headers, payload)
+            # return response
+            return {'url': url, 'payload': payload, 'response': response}
+        raise Exception('Error, method not recognized')
 
     def get(self, url, headers, payload):
         "Make a get call"
@@ -55,14 +59,6 @@ class ApiCalls(object):
     def get_api_url(self):
         "Get the API url"
         return self.app_url
-
-    def __vars_replace(self, string):
-        "Find and replace config vars from strings"
-        finder = re.findall('%([a-zA-Z0-9_]+)%', string)
-        for match in finder:
-            find = '%{0}%'.format(match)
-            string = string.replace(find, self.app_vars[match])
-        return string
 
     @staticmethod
     def convert_payload(payload):
