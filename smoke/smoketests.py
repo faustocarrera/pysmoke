@@ -7,27 +7,32 @@ Pysmoke class
 from __future__ import print_function
 import sys
 from multiprocessing.dummy import Pool as ThreadPool
-from . import utils
+from .utils import Utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
 from .apicalls import ApiCalls
+from .validator import Validator
 
 
 class SmokeTests(object):
     "Class to run the tests"
 
-    def __init__(self, config_path, tests_path):
+    def __init__(self, basepath, config_path, tests_path):
+        self.validator = Validator()
+        self.utils = Utils()
         self.tests_config = TestConfig()
-        self.app_config = AppConfig(config_path)
+        self.app_config = AppConfig(self.utils.get_path(basepath, config_path))
         self.api_calls = ApiCalls(
             self.app_config.appurl(),
-            self.app_config.vars()
+            self.app_config.vars(),
+            self.utils
         )
-        self.tests_path = tests_path
+        self.tests_path = self.utils.get_path(basepath, tests_path)
         self.tests_to_run = {}
         self.verbose = False
         self.filtered_class = ''
         self.single_test = None
+        self.total_tests = 0
 
     def set_verbose(self, verbose):
         "Set the verbose flag"
@@ -46,12 +51,12 @@ class SmokeTests(object):
         "Load and run the tests"
         self.tests_to_run = self.load_tests(self.tests_path)
         errors = self.run_thread(self.tests_to_run)
-        self.show_errors(len(self.tests_to_run), errors)
+        self.show_errors(self.total_tests, errors)
 
     def load_tests(self, test_path):
         "Load tests from config files"
         tests_to_run = {}
-        tests_files = utils.list_files(test_path)
+        tests_files = self.utils.list_files(test_path)
         # just one filtered class
         if self.filtered_class:
             self.tests_config.load(self.tests_path, self.filtered_class)
@@ -86,11 +91,32 @@ class SmokeTests(object):
         pool.map(self.run_tests, tests_to_run)
         pool.close()
         pool.join()
-        return []
+        return self.validator.get_errors()
     
     def run_tests(self, key):
         "Run the test"
-        print('Running {0} :: {1} \r\n'.format(key, self.tests_to_run[key]))
+        # display wich test are we running
+        index_parts = key.split('::')
+        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[2])
+        # end display
+        test = self.tests_to_run[key]
+        tests = self.utils.parse_tests_string(test['tests'])
+        # total tests to run
+        self.total_tests += len(tests)
+        # make the call
+        response = self.api_calls.call(test)
+        # verbose mode
+        if self.verbose:
+            self.__verbose(
+                test['method'],
+                index_parts[0],
+                index_parts[2],
+                self.api_calls.get_api_url(),
+                test,
+                response
+            )
+        # run tests  on the response
+        self.validator.test(self.verbose, response, tests, error_index)
 
     @staticmethod
     def options(config, section):

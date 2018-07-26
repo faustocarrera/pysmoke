@@ -6,23 +6,23 @@ Module that make the API calls
 
 import json
 import requests
-from . import utils
 
 
 class ApiCalls(object):
     "Class to make the request to the API"
 
-    def __init__(self, app_url, app_vars):
+    def __init__(self, app_url, app_vars, utils):
         self.app_url = app_url
         self.app_vars = app_vars
+        self.utils = utils
         self.methods = ['GET', 'POST', 'PUT', 'DELETE']
 
     def call(self, test):
         "Call entry point"
-        url = self.app_url + utils.vars_replace(test['url'], self.app_vars)
+        url = self.app_url + self.utils.vars_replace(test['url'], self.app_vars)
         method = test['method']
-        headers = {'authorization': utils.vars_replace(test['authorization'], self.app_vars)}
-        payload = self.convert_payload(utils.vars_replace(test['payload'], self.app_vars))
+        headers = {'authorization': self.utils.vars_replace(test['authorization'], self.app_vars)}
+        payload = self.convert_payload(self.utils.vars_replace(test['payload'], self.app_vars))
         if method in self.methods:
             if method == 'GET':
                 return self.get(url, headers, payload)
