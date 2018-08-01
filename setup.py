@@ -9,18 +9,15 @@ try:
 except (IOError, ImportError):
     long_description = open('README.md').read()
 
-version = '1.0.0'
-requirements = [
-    'requests>=2.4',
-    'click>=4.1',
-    'pyopenssl>=17.5',
-    'ndg-httpsclient>=0.4',
-    'pytest>=3.5'
-]
+PACKAGE_NAME = 'pysmoke'
+VERSION = '1.0.0'
+
+with open('requirements.txt') as file_requirements:
+    requirements = file_requirements.read().splitlines()
 
 setup(
-    name='pysmoke',
-    version=version,
+    name=PACKAGE_NAME,
+    version=VERSION,
     install_requires=requirements,
     author='Fausto Carrera',
     author_email='fausto.carrera@gmx.com',
@@ -32,7 +29,7 @@ setup(
     long_description=long_description,
     entry_points={
         'console_scripts': [
-            'pysmoke=pysmoke:cli'
+            'pysmoke=smoke.standalone:cli'
         ]
     },
     classifiers=[
