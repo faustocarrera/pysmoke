@@ -17,7 +17,9 @@ class Utils(object):
     @staticmethod
     def get_path(basepath, filename):
         "Return file real path"
-        return os.path.join(os.path.dirname(os.path.realpath(basepath)), filename)
+        if basepath:
+            return os.path.join(os.path.dirname(os.path.realpath(basepath)), filename)
+        return filename
 
     @staticmethod
     def vars_replace(string, variables):
