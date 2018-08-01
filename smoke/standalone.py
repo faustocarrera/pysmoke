@@ -16,7 +16,7 @@ import os
 @click.option('-f', '--filter', 'filtered_class', default=None, help='Run just this test')
 @click.option('-v', '--verbose', is_flag=True, default=False, help='Verbose mode')
 def cli(config_path, source_path, filtered_class, verbose):
-    "Pysmoke entry point"
+    "Pysmoke: test your API endpoints from the command line"
     smoke = SmokeTests(None, config_path, source_path)
     smoke.set_filter(filtered_class)
     smoke.set_verbose(verbose)
