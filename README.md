@@ -42,9 +42,11 @@ __Commands:__
 |-----------------------|------------------------|-----------------------------------------|
 | `$ python pysmoke.py` | --help                 | Display help menu                       |
 | `$ python pysmoke.py` |                        | Run all the tests in all the groups     |
-| `$ python pysmoke.py` | --verbose              | Run all the tests on verbose mode       |
 | `$ python pysmoke.py` | --filter get.test      | Run all the tests on the get.test group |
 | `$ python pysmoke.py` | --filter get.test:list | Run the list test on the get.test group |
+| `$ python pysmoke.py` | --verbose              | Run all the tests on verbose mode       |
+| `$ python pysmoke.py` | --config ./app.conf    | App configuracion file                  |
+| `$ python pysmoke.py` | --source ./tests       | Tests folder                            |
 
 ## How to start with the project
 
