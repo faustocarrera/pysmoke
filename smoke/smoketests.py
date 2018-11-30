@@ -6,7 +6,6 @@ Pysmoke class
 
 from __future__ import print_function
 import sys
-from multiprocessing.dummy import Pool as ThreadPool
 from .utils import Utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
@@ -88,10 +87,8 @@ class SmokeTests(object):
     def run_thread(self, tests):
         "Run the tests"
         tests_to_run = sorted(tests.keys())
-        pool = ThreadPool(4)
-        pool.map(self.run_tests, tests_to_run)
-        pool.close()
-        pool.join()
+        for key in tests_to_run:
+            self.run_tests(key)
         return self.validator.get_errors()
     
     def run_tests(self, key):

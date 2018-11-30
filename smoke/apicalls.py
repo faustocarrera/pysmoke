@@ -6,6 +6,7 @@ Module that make the API calls
 
 import json
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 
 class ApiCalls(object):
@@ -24,6 +25,10 @@ class ApiCalls(object):
         method = test['method']
         headers = {'authorization': self.utils.vars_replace(test['authorization'], self.app_vars)}
         payload = self.convert_payload(self.utils.vars_replace(test['payload'], self.app_vars))
+        # disable warnings
+        if self.ssl_verify is False:
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+        # make the call
         if method in self.methods:
             if method == 'GET':
                 response = self.get(url, headers, payload)

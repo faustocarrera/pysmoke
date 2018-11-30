@@ -125,6 +125,10 @@ class Validator(object):
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
+        # test if null is expected
+        if expected == 'null' and returned is None:
+            return None
+        # test if equal
         if returned == expected:
             return None
         # error
