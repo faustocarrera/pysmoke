@@ -23,8 +23,9 @@ class SmokeTests(object):
         self.tests_config = TestConfig()
         self.app_config = AppConfig(self.utils.get_path(basepath, config_path))
         self.api_calls = ApiCalls(
-            self.app_config.appurl(),
+            self.app_config.app_url(),
             self.app_config.vars(),
+            self.app_config.ssl_verify(),
             self.utils
         )
         self.tests_path = self.utils.get_path(basepath, tests_path)

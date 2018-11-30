@@ -14,9 +14,16 @@ class AppConfig(TestConfig):
         "Load app config"
         self.load(config_file)
 
-    def appurl(self):
+    def app_url(self):
         "Get app url"
         return self.get('app', 'url')
+
+    def ssl_verify(self):
+        "Get verify ssl"
+        ssl_verify = self.get('app', 'ssl_verify')
+        if ssl_verify == 'True':
+            return True
+        return False
 
     def vars(self):
         "Get the config variables"
@@ -28,4 +35,4 @@ class AppConfig(TestConfig):
 
     def debug(self):
         "Module debug"
-        return  {'app_url': self.appurl(), 'vars': self.vars()}
+        return  {'app_url': self.app_url(), 'vars': self.vars()}

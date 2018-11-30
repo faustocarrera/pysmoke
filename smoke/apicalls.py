@@ -11,10 +11,11 @@ import requests
 class ApiCalls(object):
     "Class to make the request to the API"
 
-    def __init__(self, app_url, app_vars, utils):
+    def __init__(self, app_url, app_vars, ssl_verify, utils):
         self.app_url = app_url
         self.app_vars = app_vars
         self.utils = utils
+        self.ssl_verify = ssl_verify
         self.methods = ['GET', 'POST', 'PUT', 'DELETE']
 
     def call(self, test):
@@ -38,22 +39,22 @@ class ApiCalls(object):
 
     def get(self, url, headers, payload):
         "Make a get call"
-        req = requests.get(url, headers=headers, data=payload)
+        req = requests.get(url, headers=headers, data=payload, verify=self.ssl_verify)
         return self.prepare(req)
 
     def post(self, url, headers, payload):
         "Make a post call"
-        req = requests.post(url, headers=headers, data=payload)
+        req = requests.post(url, headers=headers, data=payload, verify=self.ssl_verify)
         return self.prepare(req)
 
     def put(self, url, headers, payload):
         "Make a put call"
-        req = requests.put(url, headers=headers, data=payload)
+        req = requests.put(url, headers=headers, data=payload, verify=self.ssl_verify)
         return self.prepare(req)
 
     def delete(self, url, headers, payload):
         "Make a get call"
-        req = requests.delete(url, headers=headers, data=payload)
+        req = requests.delete(url, headers=headers, data=payload, verify=self.ssl_verify)
         return self.prepare(req)
 
     def get_api_url(self):
