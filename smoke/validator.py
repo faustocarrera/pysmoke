@@ -116,6 +116,9 @@ class Validator(object):
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
+        # test if the attribute exists
+        if returned == 'IndexError':
+            return '{0} error attribute not found'.format(index)
         # test if null is expected
         if expected == 'null' and returned is None:
             return None
