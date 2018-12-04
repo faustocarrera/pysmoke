@@ -28,7 +28,7 @@ payload:
 tests: 
 	http_status: 200
 	headers.Content-Type: True
-	userId: True
+	userId: False
 	id: True
 	id: 1
 	title: True
