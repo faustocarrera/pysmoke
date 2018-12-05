@@ -59,7 +59,7 @@
 					<code>
 [app]
 url: https://jsonplaceholder.typicode.com
-						
+
 [vars]
 post_id: 1
 user_id: 1
@@ -78,8 +78,89 @@ tests:
 	headers.Location: true
 	result: true
 	result.version: true
+	result.license: GNU
 					</code>
 				</pre>
+				<p>In this case we are testing the JSON response</p>
+				<pre class="code">
+					<code>
+{
+  "result": {
+    "version": "1.0",
+    "last_update": "2018-12-05",
+    "license": "GNU"
+  }
+}
+					</code>
+				</pre>
+				<p>The test should check the http status must be 200, the headers must contain the Location attribute, there must be a result attribute, inside the result attribute, a version attribute must exists, a license attribute must exists and must be equal to GNU.</p>
+				<!-- validation rules -->
+				<p><strong>Validation rules</strong></p>
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">Rule</th>
+						<th scope="col">Description</th>
+						<th scope="col">Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>True</td>
+						<td>The attribute must exist on the JSON response</td>
+						<td>Implemented</td>
+					</tr>
+					<tr>
+						<th scope="row">False</th>
+						<td>The attribute must not be present</td>
+						<td>Implemented</td>
+					</tr>
+					<tr>
+						<th scope="row">Value</th>
+						<td>The attribute value must exist and be equal to Value</td>
+						<td>Implemented</td>
+					</tr>
+					<tr>
+						<th scope="row">isnumber</th>
+						<td>The attribute value must exist and must be a number</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">isstring</th>
+						<td>The attribute value must exist and must be a string</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">islist</th>
+						<td>The attribute value must exist and must be a list</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">isdictionary</th>
+						<td>The attribute value must exist and must be a dictionary</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">ismail</th>
+						<td>The attribute value must exist and must be a valid e-mail</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">isdate</th>
+						<td>The attribute value must exist and must be a valid date</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">isdatetime</th>
+						<td>The attribute value must exist and must be a valid datetime</td>
+						<td>Future</td>
+					</tr>
+					<tr>
+						<th scope="row">isdateiso</th>
+						<td>The attribute value must exist and must be a valid date in ISO format</td>
+						<td>Future</td>
+					</tr>
+				</tbody>
+				<!-- commands -->
 				<p><strong>Commands</strong></p>
 				<table class="table">
 					<thead class="thead-dark">
@@ -127,32 +208,32 @@ tests:
 						</tr>
 					</tbody>
 				</table>
-				<!-- How to start -->
+				<!-- how to start -->
 				<h2 id="how-to-start">How to start</h2>
 				<p>Clone the project:</p>
 				<code class="with-bg">
 					$ git clone git@github.com:faustocarrera/pysmoke.git
 				</code>
-				
+
 				<p>Or download it:</p>
 				<code class="with-bg">
 					$ wget https://github.com/faustocarrera/pysmoke/archive/master.zip
 				</code>
-				
+
 				<p>You could use virtualenv or install everything globally.</p>
 				<code class="with-bg">
 					$ virtualenv env -p python3
 					<br />
 					$ env/bin/pip install -r requirements
 				</code>
-				
+
 				<p>Setup your API url on the config/app.conf file.</p>
 				<p>Modify or create test inside the tests folder, all the tests must have the .test extension.</p>
 				<p>Run the app.</p>
 				<code class="with-bg">
 					$ env/bin/python pysmoke.py
 				</code>
-				
+
 				<p>Run it on verbose mode.</p>
 				<code class="with-bg">
 					$ env/bin/python pysmoke.py -v

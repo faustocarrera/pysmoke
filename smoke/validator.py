@@ -51,7 +51,6 @@ class Validator(object):
         )
 
     def __validate(self, index, value, response):
-        "Validate the response with the tests"
         req_value = self.__get_value(index, response)
         # check for booleans
         if isinstance(value, bool):
@@ -91,40 +90,35 @@ class Validator(object):
         try:
             return items[int(index)]
         except IndexError:
-            return None
+            return 'IndexError'
 
     @staticmethod
     def __get_dict_value(index, items):
         "Get the item from a dictionary with items"
         if index in items.keys():
             return items[index]
-        return None
+        return 'IndexError'
 
     @staticmethod
     def __test_boolean(index, expected, returned):
         "Test true or false"
+        # the attribute must exists
         if expected is True:
-            if returned:
-                return None
-            # error
-            return '{0} error expected value {1} returned value {2}'.format(
-                index,
-                expected,
-                returned
-            )
-        else:
-            if returned:
-                return '{0} error expected value {1} returned value {2}'.format(
-                    index,
-                    expected,
-                    returned
-                )
-            # default
+            if returned == 'IndexError':
+                return '{0} error attribute not found'.format(index)
             return None
+        # the attribute must not exists
+        if expected is False:
+            if returned == 'IndexError':
+                return None
+            return '{0} error attribute found'.format(index)
 
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
+        # test if the attribute exists
+        if returned == 'IndexError':
+            return '{0} error attribute not found'.format(index)
         # test if null is expected
         if expected == 'null' and returned is None:
             return None
