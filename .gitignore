@@ -104,3 +104,6 @@ ENV/
 .project
 .pydevproject
 .settings/*
+
+# app
+config/app.conf
