@@ -59,14 +59,14 @@ __Validation rules:__
 | True         | The attribute must exist on the JSON response                         | Implemented |
 | False        | The attribute must not be present                                     | Implemented |
 | Value        | The attribute value must exist and be equal to Value                  | Implemented |
-| isnumber     | The attribute value must exist and must be a number                   | Future      |
-| isstring     | The attribute value must exist and must be a string                   | Future      |
-| islist       | The attribute value must exist and must be a list                     | Future      |
-| isdictionary | The attribute value must exist and must be a dictionary               | Future      |
-| ismail       | The attribute value must exist and must be a valid e-mail             | Future      |
-| isdate       | The attribute value must exist and must be a valid date               | Future      |
-| isdatetime   | The attribute value must exist and must be a valid datetime           | Future      |
-| isdateiso    | The attribute value must exist and must be a valid date in ISO format | Future      |
+| Isnumber     | The attribute value must exist and must be a number                   | Future      |
+| Isstring     | The attribute value must exist and must be a string                   | Future      |
+| Islist       | The attribute value must exist and must be a list                     | Future      |
+| Isdictionary | The attribute value must exist and must be a dictionary               | Future      |
+| Ismail       | The attribute value must exist and must be a valid e-mail             | Future      |
+| Isdate       | The attribute value must exist and must be a valid date               | Future      |
+| Isdatetime   | The attribute value must exist and must be a valid datetime           | Future      |
+| Isdateiso    | The attribute value must exist and must be a valid date in ISO format | Future      |
 
 __Commands:__
 
