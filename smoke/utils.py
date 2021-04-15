@@ -34,7 +34,12 @@ class Utils(object):
     @staticmethod
     def list_files(path):
         "Return a list of test on the folder"
-        return [f for f in listdir(path) if isfile(join(path, f))]
+        files = []
+        for file in listdir(path):
+            if isfile(join(path, f)):
+               files.append(f) 
+        return files
+        # return [f for f in listdir(path) if isfile(join(path, f))]
 
     def parse_tests_string(self, tests_string):
         "Parse tests string to convert it to object"

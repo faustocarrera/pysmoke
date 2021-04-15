@@ -57,6 +57,9 @@ class SmokeTests(object):
         "Load tests from config files"
         tests_to_run = {}
         tests_files = self.utils.list_files(test_path)
+        print(tests_files)
+    
+    def __other(self):
         # just one filtered class
         if self.filtered_class:
             self.tests_config.load(self.tests_path, self.filtered_class)
@@ -90,7 +93,7 @@ class SmokeTests(object):
         for key in tests_to_run:
             self.run_tests(key)
         return self.validator.get_errors()
-    
+
     def run_tests(self, key):
         "Run the test"
         # display wich test are we running
@@ -113,7 +116,8 @@ class SmokeTests(object):
                 response
             )
         # run tests  on the response
-        self.validator.test(self.verbose, response['response'], tests, error_index)
+        self.validator.test(
+            self.verbose, response['response'], tests, error_index)
 
     @staticmethod
     def options(config, section):
