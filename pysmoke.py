@@ -17,9 +17,9 @@ import click
 def cli(config_path, source_path, filtered_class, verbose):
     "Pysmoke: test your API endpoints from the command line"
     smoke = SmokeTests(__file__, config_path, source_path)
-    # smoke.set_filter(filtered_class)
-    # smoke.set_verbose(verbose)
-    # smoke.run()
+    smoke.set_filter(filtered_class)
+    smoke.set_verbose(verbose)
+    smoke.run()
 
 
 if __name__ == '__main__':

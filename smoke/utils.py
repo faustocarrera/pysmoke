@@ -34,33 +34,26 @@ class Utils(object):
     @staticmethod
     def list_files(path):
         "Return a list of test on the folder"
-        files = []
-        for file in listdir(path):
-            if isfile(join(path, f)):
-               files.append(f) 
-        return files
-        # return [f for f in listdir(path) if isfile(join(path, f))]
+        return [f for f in listdir(path) if isfile(join(path, f)) and f.endswith('_test.json')]
 
-    def parse_tests_string(self, tests_string):
+    def parse_tests(self, tests_object):
         "Parse tests string to convert it to object"
         valid_tests = []
-        tests_list = tests_string.split("\n")
-        for entry in tests_list:
-            if entry:
-                test = entry.split(':')
-                key = test[0].strip()
-                value = self.__guess_value(test[1].strip())
-                valid_tests.append((key, value))
+        for entry in tests_object:
+            key = entry.strip()
+            value = self.__guess_value(tests_object[entry])
+            valid_tests.append((key, value))
         return valid_tests
 
     @staticmethod
     def __guess_value(value):
         "Guess value"
         # check if true or false
-        if value == 'True':
-            return True
-        if value == 'False':
-            return False
+        if isinstance(value, str):    
+            if value.lower() == 'true':
+                return True
+            if value.lower() == 'false':
+                return False
         # check if number
         try:
             return int(value)

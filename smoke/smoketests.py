@@ -57,9 +57,6 @@ class SmokeTests(object):
         "Load tests from config files"
         tests_to_run = {}
         tests_files = self.utils.list_files(test_path)
-        print(tests_files)
-    
-    def __other(self):
         # just one filtered class
         if self.filtered_class:
             self.tests_config.load(self.tests_path, self.filtered_class)
@@ -82,26 +79,25 @@ class SmokeTests(object):
             )
             return tests_to_run
         # load all sections
-        for count, section in enumerate(self.tests_config.sections()):
-            index = '{0}::{1}::{2}'.format(filename, count, section)
+        for section in self.tests_config.sections():
+            index = '{0}::{1}'.format(filename, section)
             tests_to_run[index] = self.options(self.tests_config, section)
         return tests_to_run
 
     def run_thread(self, tests):
         "Run the tests"
-        tests_to_run = sorted(tests.keys())
-        for key in tests_to_run:
-            self.run_tests(key)
+        for test in tests:
+            self.run_tests(test)
         return self.validator.get_errors()
 
     def run_tests(self, key):
         "Run the test"
         # display wich test are we running
         index_parts = key.split('::')
-        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[2])
+        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[1])
         # end display
         test = self.tests_to_run[key]
-        tests = self.utils.parse_tests_string(test['tests'])
+        tests = self.utils.parse_tests(test['tests'])
         # total tests to run
         self.total_tests += len(tests)
         # make the call
@@ -111,13 +107,17 @@ class SmokeTests(object):
             self.__verbose(
                 test['method'],
                 index_parts[0],
-                index_parts[2],
+                index_parts[1],
                 test,
                 response
             )
         # run tests  on the response
         self.validator.test(
-            self.verbose, response['response'], tests, error_index)
+            self.verbose,
+            response['response'],
+            tests,
+            error_index
+        )
 
     @staticmethod
     def options(config, section):

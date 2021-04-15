@@ -1,27 +1,25 @@
-[
-    {
-        "test": "list",
+{
+    "list": {
         "url": "/posts",
         "method": "GET",
         "authorization": "Bearer {token}",
-        "payload": {"q": "arquitectura"},
+        "payload": "",
         "tests": {
-            "http_status": 201,
-            "headers.Content-Type": true,
-            "0": true,
-            "0.title": "%arquitectura%"
+            "http_status": 200,
+            "headers.Content-Type": "true",
+            "0": "true",
+            "0.title": "true"
         }
     },
-    {
-        "test": "error404",
+    "error404": {
         "url": "/posts",
         "method": "GET",
-        "authorization": null,
-        "payload": null,
+        "authorization": "",
+        "payload": "",
         "tests": {
-            "http_status": 201,
-            "headers.Content-Type": true,
-            "headers.Location": false
+            "http_status": 404,
+            "headers.Content-Type": "true",
+            "headers.Location": "false"
         }
     }
-]
+}
