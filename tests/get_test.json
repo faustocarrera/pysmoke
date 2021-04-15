@@ -1,0 +1,27 @@
+[
+    {
+        "test": "list",
+        "url": "/posts",
+        "method": "GET",
+        "authorization": "Bearer {token}",
+        "payload": {"q": "arquitectura"},
+        "tests": {
+            "http_status": 201,
+            "headers.Content-Type": true,
+            "0": true,
+            "0.title": "%arquitectura%"
+        }
+    },
+    {
+        "test": "error404",
+        "url": "/posts",
+        "method": "GET",
+        "authorization": null,
+        "payload": null,
+        "tests": {
+            "http_status": 201,
+            "headers.Content-Type": true,
+            "headers.Location": false
+        }
+    }
+]
