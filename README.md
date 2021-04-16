@@ -9,38 +9,46 @@ This is a work in progress and I'm working on it during my spare time.
 
 ## Using the library
 
-You have a single config file app.conf located on the `config/` folder holds the API URL and other variables used on your tests, and several test files called test groups, located on the `tests/` folder. All the tests files have the .test extension.
+You have a single config file `app.json` located on the `config/` folder holds the API URL and other variables used on your tests, and several test files called test groups, located on the `tests/` folder. All the tests files have the .test extension.
 
 __Config example:__
 
-```markdown
-[app]
-url: https://jsonplaceholder.typicode.com
-
-[vars]
-user_name: test@test.com
-password: test1234
+```json
+{
+  "app": {
+    "url": "https://jsonplaceholder.typicode.com",
+    "ssl_verify": false
+  },
+  "vars": {
+    "user_name": "test@test.com",
+    "password": "test1234"
+  }
+}
 ```
 
 __Test file example:__
 
-```markdown
-[login]
-url: /auth/login
-method: POST
-authorization: None
-payload: {"username": "%username%", "password": "%password%"}
-tests:
-	http_status: 200
-	headers.Location: True
-	result: True
-	result.version: True
-	result.license: GNU
+```json
+{
+  "login": {
+    "url": "/auth/login",
+    "method": "POST",
+    "authorization": "",
+    "payload": {"username": "%username%", "password": "%password%"},
+    "tests": {
+      "http_status": 200,
+      "headers.Location": "true",
+      "result": "true",
+      "result.version": "true",
+      "result.license": "GNU"
+    }
+  }
+}
 ```
 
 In this case we are testing the JSON response
 
-```
+```json
 {
   "result": {
     "version": "1.0",
@@ -101,7 +109,7 @@ $ virtualenv env -p python3
 $ env/bin/pip install -r requirements
 ```
 
-Setup your API url on the `config/app.conf` file.  
+Setup your API url on the `config/app.json` file.  
 Modify or create test inside the tests folder, all the tests must have the .test extension.  
 Run the app.
 
