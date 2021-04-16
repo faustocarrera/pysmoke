@@ -107,4 +107,4 @@ ENV/
 
 # app
 .vscode
-config/app.conf
+config/app.json
