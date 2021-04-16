@@ -6,6 +6,7 @@ Pysmoke class
 
 from __future__ import print_function
 import sys
+import uuid
 from .utils import Utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
@@ -80,7 +81,8 @@ class SmokeTests(object):
             return tests_to_run
         # load all sections
         for section in self.tests_config.sections():
-            index = '{0}::{1}'.format(filename, section)
+            id = uuid.uuid1()
+            index = '{0}::{1}::{2}'.format(filename, id.hex, section)
             tests_to_run[index] = self.options(self.tests_config, section)
         return tests_to_run
 
@@ -94,10 +96,10 @@ class SmokeTests(object):
         "Run the test"
         # display wich test are we running
         index_parts = key.split('::')
-        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[1])
+        error_index = '{0} :: {1}'.format(self.utils.get_test_name(index_parts[0]), index_parts[2])
         # end display
         test = self.tests_to_run[key]
-        tests = self.utils.parse_tests(test['tests'])
+        tests = self.__parse_tests(test['tests'])
         # total tests to run
         self.total_tests += len(tests)
         # make the call
@@ -118,6 +120,20 @@ class SmokeTests(object):
             tests,
             error_index
         )
+        
+    def __parse_tests(self, tests_object):
+        "Parse tests string to convert it to object"
+        valid_tests = []
+        for i in tests_object:
+            key = i.strip()
+            value = tests_object[i]
+            if isinstance(value, list):
+                for j in value:
+                    index = '{0}.{1}'.format(key, value.index(j))
+                    valid_tests.append((index, self.utils.guess_value(j)))
+            else:
+                valid_tests.append((key, self.utils.guess_value(value)))
+        return valid_tests
 
     @staticmethod
     def options(config, section):

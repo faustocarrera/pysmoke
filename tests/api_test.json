@@ -1,6 +1,6 @@
 {
 	"list": {
-		"url": "/posts",
+		"url": "/posts/%post_id%",
 		"method": "GET",
 		"authorization": "Bearer %token%",
 		"payload": "",
@@ -8,7 +8,7 @@
 			"http_status": 200,
 			"headers.Content-Type": "true",
 			"0": "true",
-			"0.id": [true, 1]
+			"0.id": ["true", 1]
 		}
 	},		
 	"error-404": {
