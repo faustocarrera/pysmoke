@@ -6,6 +6,7 @@ Pysmoke class
 
 from __future__ import print_function
 import sys
+import uuid
 from .utils import Utils
 from .testconfig import TestConfig
 from .appconfig import AppConfig
@@ -79,26 +80,26 @@ class SmokeTests(object):
             )
             return tests_to_run
         # load all sections
-        for count, section in enumerate(self.tests_config.sections()):
-            index = '{0}::{1}::{2}'.format(filename, count, section)
+        for section in self.tests_config.sections():
+            id = uuid.uuid1()
+            index = '{0}::{1}::{2}'.format(filename, id.hex, section)
             tests_to_run[index] = self.options(self.tests_config, section)
         return tests_to_run
 
     def run_thread(self, tests):
         "Run the tests"
-        tests_to_run = sorted(tests.keys())
-        for key in tests_to_run:
-            self.run_tests(key)
+        for test in tests:
+            self.run_tests(test)
         return self.validator.get_errors()
-    
+
     def run_tests(self, key):
         "Run the test"
         # display wich test are we running
         index_parts = key.split('::')
-        error_index = '{0} :: {1}'.format(index_parts[0], index_parts[2])
+        error_index = '{0} :: {1}'.format(self.utils.get_test_name(index_parts[0]), index_parts[2])
         # end display
         test = self.tests_to_run[key]
-        tests = self.utils.parse_tests_string(test['tests'])
+        tests = self.__parse_tests(test['tests'])
         # total tests to run
         self.total_tests += len(tests)
         # make the call
@@ -108,12 +109,31 @@ class SmokeTests(object):
             self.__verbose(
                 test['method'],
                 index_parts[0],
-                index_parts[2],
+                index_parts[1],
                 test,
                 response
             )
         # run tests  on the response
-        self.validator.test(self.verbose, response['response'], tests, error_index)
+        self.validator.test(
+            self.verbose,
+            response['response'],
+            tests,
+            error_index
+        )
+        
+    def __parse_tests(self, tests_object):
+        "Parse tests string to convert it to object"
+        valid_tests = []
+        for i in tests_object:
+            key = i.strip()
+            value = tests_object[i]
+            if isinstance(value, list):
+                for j in value:
+                    index = '{0}.{1}'.format(key, value.index(j))
+                    valid_tests.append((index, self.utils.guess_value(j)))
+            else:
+                valid_tests.append((key, self.utils.guess_value(value)))
+        return valid_tests
 
     @staticmethod
     def options(config, section):

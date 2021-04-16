@@ -106,4 +106,5 @@ ENV/
 .settings/*
 
 # app
-config/app.conf
+.vscode
+config/app.json

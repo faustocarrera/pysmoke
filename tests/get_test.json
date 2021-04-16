@@ -1,0 +1,26 @@
+{
+    "list": {
+        "url": "/posts",
+        "method": "GET",
+        "authorization": "Bearer {token}",
+        "payload": "",
+        "tests": {
+            "http_status": 200,
+            "headers.Content-Type": "true",
+            "0": "true",
+            "0.userId": ["true", 100],
+            "0.title": "true"
+        }
+    },
+    "error404": {
+        "url": "/posts",
+        "method": "GET",
+        "authorization": "",
+        "payload": "",
+        "tests": {
+            "http_status": 404,
+            "headers.Content-Type": "true",
+            "headers.Location": "false"
+        }
+    }
+}

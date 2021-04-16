@@ -105,20 +105,20 @@ class Validator(object):
         # the attribute must exists
         if expected is True:
             if returned == 'IndexError':
-                return '{0} error attribute not found'.format(index)
+                return '{0} :: error attribute not found'.format(index)
             return None
         # the attribute must not exists
         if expected is False:
             if returned == 'IndexError':
                 return None
-            return '{0} error attribute found'.format(index)
+            return '{0} :: error attribute found'.format(index)
 
     @staticmethod
     def __test_equal(index, expected, returned):
         "Test if two values are equal"
         # test if the attribute exists
         if returned == 'IndexError':
-            return '{0} error attribute not found'.format(index)
+            return '{0} :: error attribute not found'.format(index)
         # test if null is expected
         if expected == 'null' and returned is None:
             return None
@@ -126,7 +126,7 @@ class Validator(object):
         if returned == expected:
             return None
         # error
-        return '{0} error expected value {1} returned value {2}'.format(
+        return '{0} :: error expected value {1} returned value {2}'.format(
             index,
             expected,
             returned

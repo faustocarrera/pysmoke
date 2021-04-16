@@ -1,0 +1,107 @@
+{
+	"list": {
+		"url": "/posts/%post_id%",
+		"method": "GET",
+		"authorization": "Bearer %token%",
+		"payload": "",
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true",
+			"0": "true",
+			"0.id": ["true", 1]
+		}
+	},		
+	"error-404": {
+		"url": "/posts",
+		"method": "GET",
+		"authorization": "",
+		"payload": "",
+		"tests": { 
+			"http_status": 404,
+			"headers.Content-Type": "true",
+			"headers.Location": "false"
+		}
+	},		
+	"post": {
+		"url": "/posts/%post_id%",
+		"method": "GET",
+		"authorization": "",
+		"payload": "",
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true",
+			"userId": "false",
+			"id": ["true", 1],
+			"title": "true",
+			"body": "true"
+		}
+	},
+	"comments": {
+		"url": "/posts/%post_id%/comments",
+		"method": "GET",
+		"authorization": "",
+		"payload": "",
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true",
+			"0": "true",
+			"0.postId": "true",
+			"0.id": "true",
+			"0.name": "true",
+			"0.email": "true",
+			"0.body": "true"
+		}
+	},		
+	"userposts": {
+		"url": "/posts?userId=%user_id%",
+		"method": "GET",
+		"authorization": "",
+		"payload": "",
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true",
+			"0": "true",
+			"0.userId": "true",
+			"0.id": "true",
+			"0.title": "true",
+			"0.body": "true"
+		}
+	},
+	"createpost": {
+		"url": "/posts",
+		"method": "POST",
+		"authorization": "",
+		"payload": {"title": "This is a test title", "body": "This is a test body", "userId": "%user_id%"},
+		"tests": {
+			"http_status": 201,
+			"headers.Content-Type": "true",
+			"headers.Location": "true",
+			"title": "true",
+			"body": "true",
+			"id": ["true", 101]
+		}
+	},
+	"updatepost": {
+		"url": "/posts/%post_id%",
+		"method": "PUT",
+		"authorization": "",
+		"payload": {"title": "This is a test title", "body": "This is a test body"},
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true",
+			"title": "true",
+			"body": "true",
+			"id": ["true", 1]
+		}
+	},
+	"deletepost": {
+		"url": "/posts/%post_id%",
+		"method": "DELETE",
+		"authorization": "",
+		"payload": "",
+		"tests": {
+			"http_status": 200,
+			"headers.Content-Type": "true"
+		}
+	}
+}
