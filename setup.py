@@ -10,7 +10,7 @@ except (IOError, ImportError):
     long_description = open('README.md').read()
 
 PACKAGE_NAME = 'pysmoke'
-VERSION = '2.0.0'
+VERSION = '2.1.0'
 
 with open('requirements.txt') as file_requirements:
     requirements = file_requirements.read().splitlines()
