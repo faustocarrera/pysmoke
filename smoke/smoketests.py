@@ -43,10 +43,10 @@ class SmokeTests(object):
         "Set the filtered class to run"
         if filtered_class and ':' in filtered_class:
             parts = filtered_class.split(':')
-            self.filtered_class = parts[0]
+            self.filtered_class = parts[0] + '.json'
             self.single_test = parts[1]
         else:
-            self.filtered_class = filtered_class
+            self.filtered_class = filtered_class + '.json'
 
     def run(self):
         "Load and run the tests"
